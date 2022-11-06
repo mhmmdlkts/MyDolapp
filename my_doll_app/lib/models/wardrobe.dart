@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_doll_app/enums/item_type_enum.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
 
 import 'item.dart';
@@ -27,4 +28,15 @@ class Wardrobe {
   int itemCount() => _items?.length??0;
 
   Item? getItem(int index) => _items?.elementAt(index);
+
+  List<Item> getAllTypes(ItemType type) {
+    if (!isLoaded()) {
+      return [];
+    }
+    List<Item> items = [];
+    _items!.where((element) => element.type == type).forEach((element) {
+      items.add(element);
+    });
+    return items;
+  }
 }

@@ -3,6 +3,7 @@ import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_doll_app/services/firestore_paths_service.dart';
+import 'package:my_doll_app/services/storage_service.dart';
 
 class WardrobeService {
   static List<Wardrobe> wardrobes = [];
@@ -32,9 +33,13 @@ class WardrobeService {
 
     QuerySnapshot querySnapshot = await col.get();
     List<Item> items = [];
+    List<Future> urlTasks = [];
     for (var element in querySnapshot.docs) {
-      items.add(Item.fromDoc(element));
+      Item item = Item.fromDoc(element);
+      items.add(item);
+      urlTasks.add(item.getLinks());
     }
+    await Future.wait(urlTasks);
     return items;
   }
 
@@ -44,4 +49,14 @@ class WardrobeService {
     }
     return wardrobes.first;
   }
+
+  static Future addItem(Wardrobe wardrobe, Item item) async {
+    CollectionReference col = FirestorePathsService.getItemsCollection(wardrobe.id)!;
+    String id = col.doc().id;
+    if (item.base64 != null) {
+      await StorageService.testFunc(item.base64!, FirebaseAuth.instance.currentUser!.uid, id);
+    }
+    await col.doc(id).set(item.toData());
+  }
+
 }

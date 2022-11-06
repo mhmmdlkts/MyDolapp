@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
           final user = snapshot.data;
           if (user == null) {
             return SignInScreen(
-
               providers: [EmailAuthProvider()],
             );
           } else {

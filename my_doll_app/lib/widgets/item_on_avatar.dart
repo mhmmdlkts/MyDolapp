@@ -20,10 +20,11 @@ class ItemOnAvatarWidget extends StatefulWidget {
   final Combine? combine;
   final Uint8List? movableItem;
   final bool showMannequin;
+  final bool showShadow;
   final void Function(Matrix4)? onMatrixUpdate;
   final void Function(Item)? onItemClicked;
 
-  const ItemOnAvatarWidget({this.combine, this.movableItem, this.onMatrixUpdate, this.onItemClicked, this.showMannequin = false, super.key});
+  const ItemOnAvatarWidget({this.combine, this.movableItem, this.onMatrixUpdate, this.onItemClicked, this.showMannequin = false, this.showShadow = false, super.key});
 
   @override
   _ItemOnAvatarWidgetState createState() => _ItemOnAvatarWidgetState();
@@ -39,29 +40,46 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.center,
+    return SizedBox(
+      width: _width,
+      height: _height,
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(width: 0, color: Colors.transparent),
+            boxShadow: widget.showShadow? const [
+              BoxShadow(
+                color: Colors.black45,
+                blurRadius: 10,
+                offset: Offset(0, 0)
+              ),
+            ]:null,
+            borderRadius: const BorderRadius.all(Radius.circular(40))
+        ),
+        child: Column(
           children: [
-            SizedBox(
-              width: _width,
-              height: _height,
-              child: widget.showMannequin?Image.asset('assets/images/test_avatar.png'):Container(),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: _width,
+                  height: _height,
+                  child: widget.showMannequin?Image.asset('assets/images/test_avatar.png'):Container(),
+                ),
+                widget.combine!=null?Stack(
+                    children: widget.combine!.items.map((e) => SizedBox(
+                      child: _showItems(e),
+                    )).toList()
+                ):Container(),
+                widget.movableItem!=null?SizedBox(
+                  width: _width,
+                  height: _height,
+                  child: _movableObjectWidget(),
+                ):Container(),
+              ],
             ),
-            widget.combine!=null?Stack(
-                children: widget.combine!.items.map((e) => SizedBox(
-                  child: _showItems(e),
-                )).toList()
-            ):Container(),
-            widget.movableItem!=null?SizedBox(
-              width: _width,
-              height: _height,
-              child: _movableObjectWidget(),
-            ):Container(),
           ],
         ),
-      ],
+      ),
     );
   }
 

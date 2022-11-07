@@ -27,7 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     wardrobe = WardrobeService.getDefaultWardrobe();
     combine.random(wardrobe);
-    WeatherService.getWeather();
   }
 
   @override
@@ -47,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Container(height: 250),
             ItemOnAvatarWidget(
+              showShadow: true,
               combine: combine,
               onItemClicked: (Item item) => setState(() {
                 combine.random(wardrobe!);

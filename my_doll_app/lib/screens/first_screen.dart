@@ -1,16 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_doll_app/enums/item_type_enum.dart';
-import 'package:my_doll_app/models/combine.dart';
-import 'package:my_doll_app/models/item.dart';
-import 'package:my_doll_app/models/wardrobe.dart';
-import 'package:my_doll_app/screens/add_item_screen.dart';
 import 'package:my_doll_app/screens/home_screen.dart';
 import 'package:my_doll_app/screens/wardrobe_screen.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
-import 'package:my_doll_app/widgets/item_on_avatar.dart';
-
-import '../widgets/empty_app_bar.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
@@ -21,12 +12,12 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreenState extends State<FirstScreen> {
 
-  int _selectedIndex = 2;
+  int _selectedIndex = 3;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 1)).then((value) => {
+    Future.delayed(const Duration(seconds: 2)).then((value) => {
       if (mounted) {
         WardrobeService.fetchWardrobes().then((value) => {
           if (mounted)

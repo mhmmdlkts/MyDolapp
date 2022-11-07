@@ -17,6 +17,8 @@ class WardrobeScreen extends StatefulWidget {
 
 class _WardrobeScreenState extends State<WardrobeScreen> {
 
+  final List<ItemType> types = [ItemType.tShirt, ItemType.pants];
+  final List<ItemType> openTypes = [ItemType.tShirt, ItemType.pants];
   Wardrobe? wardrobe;
 
   @override
@@ -27,39 +29,25 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return wardrobe==null?const Center(child: CircularProgressIndicator()):Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ReorderableListView(
-          children: [
-            SizedBox(
-              key: ValueKey(''),
-              height: 200,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: wardrobe!.itemCount(type: ItemType.pants),
-                  itemBuilder: (context, index) => Container(
-                    padding: const EdgeInsets.all(10),
-                    child: _itemWidget((wardrobe!.getItem(index, type: ItemType.pants))!),
-                  )
-              ),
-            ),
-            SizedBox(
-              key: ValueKey(''),
-              height: 150,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: wardrobe!.itemCount(type: ItemType.tShirt),
-                itemBuilder: (context, index) => Container(
-                  padding: const EdgeInsets.all(10),
-                  child: _itemWidget((wardrobe!.getItem(index, type: ItemType.tShirt))!),
-                ),
-              ),
-            ),
-          ],
-          onReorder: (int a, int b) {},
-        )
-      ],
+    return SafeArea(
+      child: wardrobe==null?const Center(child: CircularProgressIndicator()):Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ReorderableListView(
+            shrinkWrap: true,
+            children: types.map(_getAllTypes).toList(),
+            onReorder: (int oldIndex, int newIndex) {
+              setState(() {
+                if (newIndex > oldIndex) {
+                  newIndex = newIndex - 1;
+                }
+                final element = types.removeAt(oldIndex);
+                types.insert(newIndex, element);
+              });
+            },
+          )
+        ],
+      ),
     );
       /*floatingActionButton: wardrobe != null? FloatingActionButton(
         child: const Icon(Icons.add),
@@ -71,6 +59,61 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
         },
       ):null,*/
   }
+
+  Widget _getAllTypes(ItemType type) => Column(
+    key: ValueKey(type),
+    children: [
+      Container(
+        color: Colors.brown.withOpacity(0.4),
+        child: Column(
+          children: [
+            Container(
+              color: Colors.black45,
+              padding: EdgeInsets.only(left: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(ItemTypeService.enumToReadableString(type), style: TextStyle(color: Colors.white),),
+                  Row(
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (openTypes.contains(type)) {
+                                openTypes.remove(type);
+                              } else {
+                                openTypes.add(type);
+                              }
+                            });
+                          },
+                          icon: Icon(openTypes.contains(type)?Icons.keyboard_arrow_down:Icons.keyboard_arrow_up, color: Colors.white,)
+                      ),
+                      const IconButton(
+                          onPressed: null,
+                          icon: Icon(Icons.reorder, color: Colors.white,)
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+            openTypes.contains(type)?SizedBox(
+              height: 175,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: wardrobe!.itemCount(type: type),
+                itemBuilder: (context, index) => Container(
+                  padding: const EdgeInsets.all(10),
+                  child: _itemWidget((wardrobe!.getItem(index, type: type))!),
+                ),
+              ),
+            ):Container()
+          ],
+        ),
+      ),
+      Divider(height: 0, color: Colors.black,)
+    ],
+  );
 
   Widget _itemWidget(Item item) => Image.network(item.links!.thumb_600!);
 

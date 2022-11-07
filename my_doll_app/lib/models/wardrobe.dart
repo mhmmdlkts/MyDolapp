@@ -25,9 +25,9 @@ class Wardrobe {
     _items = await WardrobeService.loadWardrobe(id);
   }
 
-  int itemCount() => _items?.length??0;
+  int itemCount({ItemType? type}) => _items?.where((element) => type==null || element.type == type)?.length??0;
 
-  Item? getItem(int index) => _items?.elementAt(index);
+  Item? getItem(int index, {ItemType? type}) => _items?.where((element) => type==null || element.type == type)?.elementAt(index);
 
   List<Item> getAllTypes(ItemType type) {
     if (!isLoaded()) {

@@ -1,12 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:my_doll_app/enums/item_type_enum.dart';
 import 'package:my_doll_app/models/combine.dart';
 import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
-import 'package:my_doll_app/screens/add_item_screen.dart';
+import 'package:my_doll_app/models/weather.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
+import 'package:my_doll_app/services/weather_service.dart';
 import 'package:my_doll_app/widgets/item_on_avatar.dart';
+import 'package:my_doll_app/widgets/weather_bg_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,60 +25,36 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 1)).then((value) => {
-      if (mounted) {
-        WardrobeService.fetchWardrobes().then((value) => {
-          if (mounted)
-            setState(() {
-              wardrobe = WardrobeService.getDefaultWardrobe();
-              combine.random(wardrobe!);
-            })
-        })
-      }
-    });
+    wardrobe = WardrobeService.getDefaultWardrobe();
+    combine.random(wardrobe);
+    WeatherService.getWeather();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Drawer(
-        child: ElevatedButton(onPressed: (){
-          FirebaseAuth.instance.signOut();
-        }, child: Text('Sign Out'),),
-      ),
-      appBar: AppBar(title: Text('My Dolapp')),
-      body: wardrobe==null?const Center(child: CircularProgressIndicator()):Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ItemOnAvatarWidget(
-            combine: combine,
-            onItemClicked: (Item item) => setState(() {
+    return Container(
+      /*constraints: const BoxConstraints.expand(),
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/bg4.jpg"),
+          fit: BoxFit.fill,
+        ),
+      ),*/
+      child: WeatherBgWidget(
+        weather: Weather(temp: 17.4, type: WeatherType.rainy, country: 'Salzburg'),
+        child: wardrobe==null?const Center(child: CircularProgressIndicator(color: Colors.white,)):Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(height: 250),
+            ItemOnAvatarWidget(
+              combine: combine,
+              onItemClicked: (Item item) => setState(() {
                 combine.random(wardrobe!);
-              }
-            )
-          ),
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: wardrobe!.itemCount(),
-              itemBuilder: (context, index) => _itemWidget((wardrobe!.getItem(index))!),
-            )
-          )
-        ],
+              })
+            ),
+          ],
+        ),
       ),
-      floatingActionButton: wardrobe != null? FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddItemScreen(wardrobe: wardrobe!)),
-          );
-        },
-      ):null,
     );
   }
-
-  Widget _itemWidget(Item item) => Image.network(item.links!.thumb_600!);
-
 }

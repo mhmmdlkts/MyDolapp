@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_doll_app/screens/home_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:my_doll_app/screens/first_screen.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -18,9 +19,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      title: 'My DolApp',
+      theme: Theme.of(context).copyWith(
+          appBarTheme: Theme.of(context).appBarTheme.copyWith(systemOverlayStyle:SystemUiOverlayStyle.light),
       ),
       home: StreamBuilder(
         stream: auth.FirebaseAuth.instance.authStateChanges(),
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
               providers: [EmailAuthProvider()],
             );
           } else {
-            return HomeScreen();
+            return const FirstScreen();
           }
         }
       )

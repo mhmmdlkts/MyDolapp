@@ -34,27 +34,33 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
   final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
   final double _width = 400;
   final double _height = 500;
+  int position = 0;
+  double val = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
+    return Column(
       children: [
-        SizedBox(
-          width: _width,
-          height: _height,
-          child: widget.showMannequin?Image.asset('assets/images/test_avatar.png'):Container(),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              width: _width,
+              height: _height,
+              child: widget.showMannequin?Image.asset('assets/images/test_avatar.png'):Container(),
+            ),
+            widget.combine!=null?Stack(
+                children: widget.combine!.items.map((e) => SizedBox(
+                  child: _showItems(e),
+                )).toList()
+            ):Container(),
+            widget.movableItem!=null?SizedBox(
+              width: _width,
+              height: _height,
+              child: _movableObjectWidget(),
+            ):Container(),
+          ],
         ),
-        widget.combine!=null?Stack(
-          children: widget.combine!.items.map((e) => SizedBox(
-            child: _showItems(e),
-          )).toList()
-        ):Container(),
-        widget.movableItem!=null?SizedBox(
-          width: _width,
-          height: _height,
-          child: _movableObjectWidget(),
-        ):Container(),
       ],
     );
   }

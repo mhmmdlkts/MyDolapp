@@ -14,7 +14,10 @@ class Combine {
     createTime = Timestamp.now();
   }
 
-  void random(Wardrobe wardrobe) {
+  void random(Wardrobe? wardrobe) {
+    if (wardrobe == null) {
+      return;
+    }
     items.clear();
     List<ItemType> validCombineTypes = [ItemType.tShirt, ItemType.pants];
     for (ItemType type in validCombineTypes) {

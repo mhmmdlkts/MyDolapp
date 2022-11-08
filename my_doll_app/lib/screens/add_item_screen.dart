@@ -10,6 +10,7 @@ import 'package:my_doll_app/models/wardrobe.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
 import 'package:my_doll_app/widgets/item_on_avatar.dart';
 import 'package:pasteboard/pasteboard.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 class AddItemScreen extends StatefulWidget {
   final Wardrobe wardrobe;
@@ -25,6 +26,7 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
   Uint8List? img;
   final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
   bool _isUploading = false;
+  Color? color;
 
   @override
   void initState() {
@@ -71,7 +73,11 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
               item.matrix = m;
             },
           ),
-
+          Container(
+            color: color==null?Colors.transparent:color,
+            width: 400,
+            height: 50,
+          ),
           _isUploading?const CircularProgressIndicator():ElevatedButton(
             onPressed: () async {
               setState(() {
@@ -95,8 +101,15 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
     if (imageBytes == null) {
       return;
     }
+    color = await getImagePalette(Image.memory(imageBytes).image);
     setState(() {
       img = imageBytes;
     });
+  }
+
+  Future<Color> getImagePalette (ImageProvider imageProvider) async {
+    final PaletteGenerator paletteGenerator = await PaletteGenerator
+        .fromImageProvider(imageProvider);
+    return paletteGenerator.dominantColor?.color??Colors.transparent;
   }
 }

@@ -67,15 +67,12 @@ class SunMoonWidget extends StatelessWidget {
                     child: Weather.isDay(hour)? Container(
                         key: const ValueKey(1),
                         child: const Image(
-                          image: AssetImage(
-                            "packages/day_night_time_picker/assets/sun.png",
-                          ),
+                          image: AssetImage( "assets/images/sun.png"),
                         ))
                         : Container(
                       key: const ValueKey(2),
                       child: const Image(
-                        image: AssetImage(
-                            "packages/day_night_time_picker/assets/moon.png"),
+                        image: AssetImage("assets/images/moon.png"),
                       ),
                     ),
                     transitionBuilder: (child, anim) {

@@ -49,8 +49,7 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
             boxShadow: widget.showShadow? const [
               BoxShadow(
                 color: Colors.black26,
-                blurRadius: 10,
-                offset: Offset(0, 0)
+                blurRadius: 3,
               ),
             ]:null,
             borderRadius: const BorderRadius.all(Radius.circular(20))
@@ -108,7 +107,9 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
       builder: (context, child) {
         return Transform(
           transform: notifier.value,
-          child: widget.movableItem!=null?Image.memory(widget.movableItem!):Container(),
+          child: widget.movableItem!=null?SizedBox(
+            child: Image.memory(widget.movableItem!),
+          ):Container(),
         );
       },
     ),

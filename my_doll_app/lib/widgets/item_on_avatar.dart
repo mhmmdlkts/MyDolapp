@@ -48,12 +48,12 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
             border: Border.all(width: 0, color: Colors.transparent),
             boxShadow: widget.showShadow? const [
               BoxShadow(
-                color: Colors.black45,
+                color: Colors.black26,
                 blurRadius: 10,
                 offset: Offset(0, 0)
               ),
             ]:null,
-            borderRadius: const BorderRadius.all(Radius.circular(40))
+            borderRadius: const BorderRadius.all(Radius.circular(20))
         ),
         child: Column(
           children: [

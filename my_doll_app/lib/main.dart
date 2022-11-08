@@ -20,8 +20,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'My DolApp',
-      theme: Theme.of(context).copyWith(
-          appBarTheme: Theme.of(context).appBarTheme.copyWith(systemOverlayStyle:SystemUiOverlayStyle.light),
+      theme: ThemeData(
+        primarySwatch: Colors.brown,
+        appBarTheme: Theme.of(context).appBarTheme.copyWith(systemOverlayStyle:SystemUiOverlayStyle.light),
       ),
       home: StreamBuilder(
         stream: auth.FirebaseAuth.instance.authStateChanges(),

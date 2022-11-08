@@ -2,13 +2,20 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:weather/weather.dart' as w;
 
 class Weather {
-  double temp;
-  WeatherType type;
-  String country;
+  late double temp;
+  late WeatherType type;
+  late String country;
 
   Weather({required this.temp, required this.type, required this.country});
+
+  Weather.fromWeather(w.Weather w, String country) {
+    temp = w.temperature?.celsius??0.0;
+    this.country = country??'';
+    type = conditionCodeToType(w.weatherConditionCode??0);
+  }
 
   String getReadableTemp() {
     return '${temp.toStringAsFixed(1)}°';
@@ -34,6 +41,16 @@ class Weather {
     }
   }
 
+  AssetImage getImage() {
+    switch (type) {
+      case WeatherType.sunny: return const AssetImage('assets/images/cloudy.png');
+      case WeatherType.cloudy: return const AssetImage('assets/images/cloudy.png');
+      case WeatherType.rainy: return const AssetImage('assets/images/rainy.png');
+      case WeatherType.heavyRainy: return const AssetImage('assets/images/rainy.png');
+      case WeatherType.snowy: return const AssetImage('assets/images/snowy.png');
+    }
+  }
+
   IconData getIcon() {
     switch (type) {
       case WeatherType.sunny: return Icons.sunny;
@@ -43,6 +60,16 @@ class Weather {
       case WeatherType.snowy: return Icons.cloudy_snowing;
     }
   }
+
+  WeatherType conditionCodeToType(int weatherConditionCode) {
+    switch (weatherConditionCode) {
+      case 0: return WeatherType.rainy;
+    }
+    return WeatherType.sunny;
+  }
+
+  static bool isDay(hour) => hour >= 6 && hour <= 18;
+  static bool isDusk(hour) => hour >= 16 && hour <= 18;
 }
 
 enum WeatherType {

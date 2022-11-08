@@ -9,6 +9,7 @@ import 'package:my_doll_app/services/wardrobe_service.dart';
 import 'package:my_doll_app/services/weather_service.dart';
 import 'package:my_doll_app/widgets/item_on_avatar.dart';
 import 'package:my_doll_app/widgets/weather_bg_widget.dart';
+import 'package:parallax_rain/parallax_rain.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  Weather? weather;
   Wardrobe? wardrobe;
   Combine combine = Combine();
 
@@ -27,20 +29,16 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     wardrobe = WardrobeService.getDefaultWardrobe();
     combine.random(wardrobe);
+    WeatherService.getWeather().then((value) => setState((){
+      weather = value;
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      /*constraints: const BoxConstraints.expand(),
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/images/bg4.jpg"),
-          fit: BoxFit.fill,
-        ),
-      ),*/
       child: WeatherBgWidget(
-        weather: Weather(temp: 17.4, type: WeatherType.rainy, country: 'Salzburg'),
+        weather: weather,
         child: wardrobe==null?const Center(child: CircularProgressIndicator(color: Colors.white,)):Column(
           mainAxisSize: MainAxisSize.min,
           children: [

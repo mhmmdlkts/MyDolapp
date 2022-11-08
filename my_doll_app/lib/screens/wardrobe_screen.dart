@@ -30,34 +30,43 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: wardrobe==null?const Center(child: CircularProgressIndicator()):Column(
-        mainAxisSize: MainAxisSize.min,
+      child: Stack(
         children: [
-          ReorderableListView(
-            shrinkWrap: true,
-            children: types.map(_getAllTypes).toList(),
-            onReorder: (int oldIndex, int newIndex) {
-              setState(() {
-                if (newIndex > oldIndex) {
-                  newIndex = newIndex - 1;
-                }
-                final element = types.removeAt(oldIndex);
-                types.insert(newIndex, element);
-              });
-            },
-          )
+          wardrobe==null?const Center(child: CircularProgressIndicator()):Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ReorderableListView(
+                shrinkWrap: true,
+                children: types.map(_getAllTypes).toList(),
+                onReorder: (int oldIndex, int newIndex) {
+                  setState(() {
+                    if (newIndex > oldIndex) {
+                      newIndex = newIndex - 1;
+                    }
+                    final element = types.removeAt(oldIndex);
+                    types.insert(newIndex, element);
+                  });
+                },
+              )
+            ],
+          ),
+          wardrobe != null?Positioned(
+            bottom: 10,
+            right: 10,
+            child: FloatingActionButton(
+              child: const Icon(Icons.add),
+              backgroundColor: Colors.brown.withOpacity(0.4),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddItemScreen(wardrobe: wardrobe!)),
+                );
+              },
+            )
+          ):Container()
         ],
       ),
     );
-      /*floatingActionButton: wardrobe != null? FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddItemScreen(wardrobe: wardrobe!)),
-          );
-        },
-      ):null,*/
   }
 
   Widget _getAllTypes(ItemType type) => Column(

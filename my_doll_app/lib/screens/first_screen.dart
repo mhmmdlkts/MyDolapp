@@ -12,11 +12,12 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreenState extends State<FirstScreen> {
 
-  int _selectedIndex = 3;
+  late int _selectedIndex;
 
   @override
   void initState() {
     super.initState();
+    _selectedIndex = 2;
     Future.delayed(const Duration(seconds: 2)).then((value) => {
       if (mounted) {
         WardrobeService.fetchWardrobes().then((value) => {

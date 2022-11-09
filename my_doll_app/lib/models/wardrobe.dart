@@ -12,8 +12,16 @@ class Wardrobe {
 
   Wardrobe.fromDoc(QueryDocumentSnapshot doc) {
     id = doc.id;
-    name = doc.get('name');
-    createTime = doc.get('create_time');
+
+    Map<String, dynamic> o = doc.data() as Map<String, dynamic>;
+
+
+    if (o.containsKey('name')) {
+      name = o['name'];
+    }
+    if (o.containsKey('create_time')) {
+      createTime = o['create_time'];
+    }
   }
 
   bool isLoaded() => _items != null;

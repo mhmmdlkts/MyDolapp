@@ -26,9 +26,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     wardrobe = WardrobeService.getDefaultWardrobe();
     combine.random(wardrobe);
-    WeatherService.getWeather().then((value) => setState((){
-      weather = value;
-    }));
+    WeatherService.getWeather().then((value) => {
+      if (mounted)
+        setState((){
+          weather = value;
+        })
+    });
   }
 
   @override

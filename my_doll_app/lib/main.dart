@@ -4,6 +4,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_doll_app/screens/first_screen.dart';
+import 'package:my_doll_app/screens/splash_screen.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -11,10 +12,30 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  _MyApp createState() => _MyApp();
+}
+
+class _MyApp extends State<MyApp> {
+  int i = 0;
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3)).then((value) => {
+      if (i < 2) {
+        setState((){
+          i = 2;
+        })
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +49,7 @@ class MyApp extends StatelessWidget {
         stream: auth.FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.active) {
-            return const Center(child: CircularProgressIndicator());
+            return loading();
           }
           final user = snapshot.data;
           if (user == null) {
@@ -36,10 +57,16 @@ class MyApp extends StatelessWidget {
               providers: [EmailAuthProvider()],
             );
           } else {
-            return const FirstScreen();
+            if (++i >= 2) {
+              return const FirstScreen();
+            } else {
+              return loading();
+            }
           }
         }
       )
     );
   }
+
+  Widget loading() => SplashScreen(freeze: true);
 }

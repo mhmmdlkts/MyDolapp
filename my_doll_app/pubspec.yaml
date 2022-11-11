@@ -47,5 +47,6 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
+    - assets/images/avatar/
 
   uses-material-design: true

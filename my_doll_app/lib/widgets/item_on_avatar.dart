@@ -10,9 +10,12 @@ import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'package:my_doll_app/enums/item_type_enum.dart';
 import 'package:my_doll_app/models/combine.dart';
 import 'package:my_doll_app/models/item.dart';
+import 'package:my_doll_app/models/person.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
+import 'package:my_doll_app/services/person_service.dart';
 import 'package:my_doll_app/services/storage_service.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
+import 'package:my_doll_app/widgets/avatar_widget.dart';
 import 'package:pasteboard/pasteboard.dart';
 import 'package:clipboard/clipboard.dart';
 
@@ -62,7 +65,7 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
                 SizedBox(
                   width: _width,
                   height: _height,
-                  child: widget.showMannequin?Image.asset('assets/images/test_avatar.png'):Container(),
+                  child: widget.showMannequin?AvatarWidget(_width, _height, gender: PersonService.person.gender??Gender.male):Container(),
                 ),
                 widget.combine!=null?Stack(
                     children: widget.combine!.items.map((e) => SizedBox(

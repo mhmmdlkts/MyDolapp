@@ -7,7 +7,6 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const secrets = require('./secrets');
-const {getAuth} = require("firebase-admin/auth");
 
 admin.initializeApp();
 const db = admin.firestore();

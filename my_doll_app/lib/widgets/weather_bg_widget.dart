@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:my_doll_app/widgets/sun_moon_widget.dart';
 import 'package:parallax_rain/parallax_rain.dart';
 import 'package:snowfall/snowfall.dart';
@@ -178,7 +179,7 @@ class _WeatherBgWidgetState extends State<WeatherBgWidget> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(getTime(), style: TextStyle(fontSize:22, color: Colors.white, fontWeight: FontWeight.bold, shadows: [shadow])),
-                                      Text(getDate(), style: TextStyle(fontSize:12, color: Colors.white, shadows: [shadow])),
+                                      Text(Jiffy(widget.weather!.dateTime).format('MMM, dd yyyy'), style: TextStyle(fontSize:12, color: Colors.white, shadows: [shadow])),
                                       Text(widget.weather!.country, style: TextStyle(fontSize:13, color: Colors.white, fontWeight: FontWeight.bold, shadows: [shadow])),
                                     ],
                                   )

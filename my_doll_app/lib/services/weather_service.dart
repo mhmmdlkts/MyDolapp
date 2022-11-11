@@ -1,4 +1,4 @@
-import 'package:my_doll_app/services/secret_api_service.dart';
+import 'package:my_doll_app/secrets/secret_api_service.dart';
 import 'package:weather/weather.dart';
 import 'package:my_doll_app/models/weather.dart' as custom;
 

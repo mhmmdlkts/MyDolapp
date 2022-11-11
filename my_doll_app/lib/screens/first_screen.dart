@@ -55,8 +55,9 @@ class _FirstScreenState extends State<FirstScreen> {
     if (!PersonService.isInited()) {
       return Container();
     }
+    print(PersonService.person.gender);
     if (!PersonService.person.isDataComplete()) {
-      return const GetAdditionalInfoScreen();
+      return GetAdditionalInfoScreen(PersonService.person);
     }
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(

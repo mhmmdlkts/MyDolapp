@@ -8,13 +8,15 @@ class Weather {
   late double temp;
   late WeatherType type;
   late String country;
+  late DateTime dateTime;
 
-  Weather({required this.temp, required this.type, required this.country});
+  Weather({required this.temp, required this.type, required this.country, required this.dateTime});
 
   Weather.fromWeather(w.Weather w, String country) {
     temp = w.temperature?.celsius??0.0;
     this.country = country??'';
     type = conditionCodeToType(w.weatherConditionCode??0);
+    dateTime = DateTime.now();
   }
 
   String getReadableTemp() {

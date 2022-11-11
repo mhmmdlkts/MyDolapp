@@ -607,6 +607,10 @@ PODS:
     - firebase_core
     - Flutter
     - nanopb (< 2.30910.0, >= 2.30908.0)
+  - cloud_functions (4.0.3):
+    - Firebase/Functions (= 10.0.0)
+    - firebase_core
+    - Flutter
   - Firebase/Auth (10.0.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 10.0.0)
@@ -618,6 +622,9 @@ PODS:
   - Firebase/Firestore (10.0.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 10.0.0)
+  - Firebase/Functions (10.0.0):
+    - Firebase/CoreOnly
+    - FirebaseFunctions (~> 10.0.0)
   - Firebase/Storage (10.0.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 10.0.0)
@@ -666,6 +673,16 @@ PODS:
     - "gRPC-C++ (~> 1.44.0)"
     - leveldb-library (~> 1.22)
     - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseFunctions (10.0.0):
+    - FirebaseAppCheckInterop (~> 10.0)
+    - FirebaseAuthInterop (~> 10.0)
+    - FirebaseCore (~> 10.0)
+    - FirebaseCoreExtension (~> 10.0)
+    - FirebaseMessagingInterop (~> 10.0)
+    - FirebaseSharedSwift (~> 10.0)
+    - GTMSessionFetcher/Core (~> 2.1)
+  - FirebaseMessagingInterop (10.1.0)
+  - FirebaseSharedSwift (10.1.0)
   - FirebaseStorage (10.0.0):
     - FirebaseAppCheckInterop (~> 10.0)
     - FirebaseAuthInterop (~> 10.0)
@@ -754,16 +771,20 @@ PODS:
   - nanopb/encode (2.30909.0)
   - pasteboard (0.0.1):
     - Flutter
+  - permission_handler_apple (9.0.4):
+    - Flutter
   - PromisesObjC (2.1.1)
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
   - pasteboard (from `.symlinks/plugins/pasteboard/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
 
 SPEC REPOS:
   trunk:
@@ -778,6 +799,9 @@ SPEC REPOS:
     - FirebaseCoreInternal
     - FirebaseDynamicLinks
     - FirebaseFirestore
+    - FirebaseFunctions
+    - FirebaseMessagingInterop
+    - FirebaseSharedSwift
     - FirebaseStorage
     - GoogleUtilities
     - "gRPC-C++"
@@ -791,6 +815,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
+  cloud_functions:
+    :path: ".symlinks/plugins/cloud_functions/ios"
   firebase_auth:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
@@ -803,11 +829,14 @@ EXTERNAL SOURCES:
     :path: Flutter
   pasteboard:
     :path: ".symlinks/plugins/pasteboard/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   cloud_firestore: 62c5fa0e5ce5373be25d6233e8edbbe991fa973d
+  cloud_functions: b2a920b32e1f516dd6acc4451357f2ce0df3a4f2
   Firebase: 1b810f3d0c0532e27a48f1961f8c0400a668a2cf
   firebase_auth: dd33e93fce72a1c72040f7380dacf06e89db5705
   firebase_core: 5c0bb0ca7d0e70480a68a6e9ad9bf55d1edd5305
@@ -821,6 +850,9 @@ SPEC CHECKSUMS:
   FirebaseCoreInternal: 96d75228e10fd369564da51bd898414eb0f54df5
   FirebaseDynamicLinks: 37dcd9f082b9c5ea9eb5826e82aef58bbd6fd5c1
   FirebaseFirestore: 5007583f3db2129de8e87f18ee63f4c86f07e7a3
+  FirebaseFunctions: 3e3ae1fba2feab088c9acc043aa0d094e711988b
+  FirebaseMessagingInterop: 26c3bf82c7697d8fbfb13216541423bc2c93e8fc
+  FirebaseSharedSwift: 6966c4de41fba13a4270de1e421e6eee2cf90113
   FirebaseStorage: 8b0b0630e11b9f3e4a479a26cfccb70ec790ec50
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
@@ -831,8 +863,9 @@ SPEC CHECKSUMS:
   Libuv-gRPC: 55e51798e14ef436ad9bc45d12d43b77b49df378
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   pasteboard: 982969ebaa7c78af3e6cc7761e8f5e77565d9ce0
+  permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
 
-PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
+PODFILE CHECKSUM: f3708de6ba6d4fcf5b947f035f02467ccb638da4
 
 COCOAPODS: 1.11.3

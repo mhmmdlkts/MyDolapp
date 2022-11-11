@@ -25,8 +25,17 @@ dependencies:
   parallax_rain: ^1.1.0
   snowfall: ^0.0.2
   palette_generator: ^0.3.3+2
-  im_stepper: ^1.0.1+1
-  # day_night_time_picker: ^1.1.3 dont delete me add licences
+  ruler_picker_bn: ^0.0.6
+  jiffy: ^5.0.0
+  permission_handler: ^10.2.0
+  cloud_functions: ^4.0.3
+  http: ^0.13.5
+  crypto: ^3.0.2
+  # location: ^4.4.0
+
+
+  # ej_stepper: ^0.1.0 TODO dont delete me add licences
+  # day_night_time_picker: ^1.1.3 TODO dont delete me add licences
 
 
 dev_dependencies:

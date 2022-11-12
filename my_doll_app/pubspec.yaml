@@ -32,6 +32,7 @@ dependencies:
   http: ^0.13.5
   crypto: ^3.0.2
   simple_shadow: ^0.3.0
+  photo_view: ^0.14.0
   # location: ^4.4.0
 
 

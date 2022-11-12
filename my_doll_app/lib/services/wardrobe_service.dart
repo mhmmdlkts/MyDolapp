@@ -37,7 +37,7 @@ class WardrobeService {
     for (var element in querySnapshot.docs) {
       Item item = Item.fromDoc(element);
       items.add(item);
-      urlTasks.add(item.getLinks());
+      urlTasks.add(item.getThumbLink());
     }
     await Future.wait(urlTasks);
     return items;

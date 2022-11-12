@@ -30,16 +30,26 @@ class Item {
     'matrix': encodeMatrix4(matrix)
   };
 
-  Future getLinks() async {
-    if (id == null) {
+  Future getThumbLink() async {
+    if (links.thumb_600 != null) {
       return;
     }
+
     final Reference storageRef = FirebaseStorage.instance.ref(FirebaseAuth.instance.currentUser!.uid).child('Items').child(id!);
-    //final String original = await storageRef.child('original.png').getDownloadURL();
+
     final String thumb_600 = await storageRef.child('600x600.png').getDownloadURL();
-    links = ItemDownloadLinks();
-    //links!.original = original;
-    links!.thumb_600 = thumb_600;
+    links.thumb_600 = thumb_600;
+  }
+
+  Future<void> getOriginalLink() async {
+    if (links.original != null) {
+      return;
+    }
+
+    final Reference storageRef = FirebaseStorage.instance.ref(FirebaseAuth.instance.currentUser!.uid).child('Items').child(id!);
+
+    final String original = await storageRef.child('original.png').getDownloadURL();
+    links.original = original;
   }
 
   static Matrix4 decodeMatrix4(String? matrix) {

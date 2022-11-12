@@ -7,6 +7,7 @@ import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
 import 'package:my_doll_app/screens/add_item_screen.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 
 class WardrobeScreen extends StatefulWidget {
@@ -18,6 +19,8 @@ class WardrobeScreen extends StatefulWidget {
 
 class _WardrobeScreenState extends State<WardrobeScreen> {
 
+
+  final PhotoViewController _photoViewController = PhotoViewController();
   final List<ItemType> types = [ItemType.tShirt, ItemType.pants];
   final List<ItemType> openTypes = [ItemType.tShirt, ItemType.pants];
   Wardrobe? wardrobe;
@@ -110,9 +113,13 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     color: Colors.white,
                     child: InkWell(
                       onTap: () {
-                        print(item.id);
+                        openItem(item);
                       },
                       child: _itemWidget(item),
+                      onLongPress: () {
+                        _showItemDialog(item);
+                        print('long');
+                      },
                     ),
                   ),
                 );
@@ -212,6 +219,75 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
       ],
     ),
   );
+
+  void _showItemDialog(Item item) async {
+    await item.getOriginalLink();
+
+    Size size = MediaQuery.of(context).size;
+
+    showDialog(
+      context: context,
+
+      builder: (ctx) => GestureDetector(
+        onTap: () {
+          Navigator.pop(context, false);
+        },
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+          child: Container(
+            decoration: BoxDecoration(color: Colors.white.withOpacity(0.0)),
+            child: Center(
+              child: GestureDetector(
+                onTap: () {
+                  openItem(item);
+                },
+                child: Container(
+                  width: size.width - 30,
+                  height: size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(3)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 10,
+                        offset: shadowOffset,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: ClipRect(
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        child: PhotoView(
+                          controller: _photoViewController,
+                          backgroundDecoration: BoxDecoration(
+                            color: Colors.transparent,
+                          ),
+
+                          imageProvider: NetworkImage(item.links!.original!),
+                          enableRotation: false,
+                          gaplessPlayback: true,
+                          onScaleEnd: (ctx, details, value) {
+                            _photoViewController.reset();
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void openItem(Item item) {
+    print(item.id);
+  }
 
   Widget _widgetWithShadow(String url) => SimpleShadow(
     offset: shadowOffset,

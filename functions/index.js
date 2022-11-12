@@ -5,6 +5,7 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 const crypto = require('crypto');
+const ntc = require('ntc');
 
 const secrets = require('./secrets');
 
@@ -16,6 +17,19 @@ const region = 'europe-west1';
 exports.onNewUserCreate = functions.region(region).auth.user().onCreate(async (user) => {
     await admin.firestore().collection('users').doc(user.uid).set({email: user.email});
     await createNewWardrobe(user.uid, 'My Wardrobe')
+});
+
+exports.updateColorName = functions.region(region).firestore.document('users/{userId}/wardrobes/{wardrobeId}/items/{itemId}').onUpdate((change, context) => {
+    const colorHex = change.after.data()[['colorHex']];
+    let name
+    if (colorHex != undefined) {
+        name = ntc.name(colorHex)[1];
+    }
+    if (name == undefined || name.includes('Invalid Color')) {
+        change.after.ref.update({'colorName': admin.firestore.FieldValue.delete()});
+    } else {
+        change.after.ref.update({'colorName': name});
+    }
 });
 
 exports.existUsername = functions.region(region).https.onRequest(async (req, res) => {

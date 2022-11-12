@@ -18,7 +18,8 @@
     "express": "^4.18.2",
     "firebase": "^9.13.0",
     "firebase-admin": "^10.0.2",
-    "firebase-functions": "^4.0.2"
+    "firebase-functions": "^4.0.2",
+    "ntc": "^0.0.1"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"

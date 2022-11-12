@@ -43,12 +43,14 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Container(height: 250),
           ItemOnAvatarWidget(
-            showMannequin: true,
             showShadow: true,
             combine: combine,
-            onItemClicked: (Item item) => setState(() {
+            onRefreshClicked: () => setState(() {
               combine.random(wardrobe!);
-            })
+            }),
+            onItemClicked: (Item item) => setState(() {
+              combine.random(wardrobe!, oldItem: item);
+            }),
           ),
         ],
       ),

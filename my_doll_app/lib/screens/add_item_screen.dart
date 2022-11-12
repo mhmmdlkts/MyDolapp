@@ -1,12 +1,13 @@
-
 import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:my_doll_app/enums/item_type_enum.dart';
 import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
+import 'package:my_doll_app/services/system_service.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
 import 'package:my_doll_app/widgets/item_on_avatar.dart';
 import 'package:pasteboard/pasteboard.dart';
@@ -49,6 +50,7 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
 
   @override
   Widget build(BuildContext context) {
+    print(SystemService.isSupportingIsolateImage);
     return Scaffold(
       appBar: AppBar(title: Text('Add Item')),
       body: Column(
@@ -67,8 +69,8 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
             selectedColor: Theme.of(context).colorScheme.secondary,
           ),
           ItemOnAvatarWidget(
-            movableItem: img,
             showMannequin: true,
+            movableItem: img,
             onMatrixUpdate: (Matrix4 m) {
               item.matrix = m;
             },

@@ -6,6 +6,7 @@ import 'package:my_doll_app/enums/item_type_enum.dart';
 import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
 import 'package:my_doll_app/screens/add_item_screen.dart';
+import 'package:my_doll_app/screens/single_item_screen.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:simple_shadow/simple_shadow.dart';
@@ -179,7 +180,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
 
   Widget _itemWidget(Item item) => Container(
     width: 150,
-    height: 200,
+    height: 220,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(3)),
       boxShadow: [
@@ -201,11 +202,10 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
             children: [
               Container(
                 height: 80,
-                width: 120,
+                width: 115,
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.02),
+                  color: Colors.black.withOpacity(0.035),
                   borderRadius: BorderRadius.all(Radius.circular(3)),
-
                 ),
               ),
               Container(
@@ -215,7 +215,8 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
             ],
           ),
         ),
-        Text(ItemTypeService.enumToReadableString(item.type), style: TextStyle(fontWeight: FontWeight.bold),)
+        Text(ItemTypeService.enumToReadableString(item.type), style: TextStyle(fontWeight: FontWeight.bold),),
+        // Container(color: item.color, height: 18 )
       ],
     ),
   );
@@ -286,6 +287,10 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   }
 
   void openItem(Item item) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SingleItemScreen(item: item!)),
+    );
     print(item.id);
   }
 

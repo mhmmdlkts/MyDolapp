@@ -26,8 +26,9 @@ class ItemOnAvatarWidget extends StatefulWidget {
   final bool showShadow;
   final void Function(Matrix4)? onMatrixUpdate;
   final void Function(Item)? onItemClicked;
+  final VoidCallback? onRefreshClicked;
 
-  const ItemOnAvatarWidget({this.combine, this.movableItem, this.onMatrixUpdate, this.onItemClicked, this.showMannequin = false, this.showShadow = false, super.key});
+  const ItemOnAvatarWidget({this.combine, this.movableItem, this.onMatrixUpdate, this.onItemClicked, this.onRefreshClicked, this.showMannequin = false, this.showShadow = false, super.key});
 
   @override
   _ItemOnAvatarWidgetState createState() => _ItemOnAvatarWidgetState();
@@ -65,7 +66,7 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
                 SizedBox(
                   width: _width,
                   height: _height,
-                  child: widget.showMannequin?AvatarWidget(_width, _height, gender: PersonService.person.gender??Gender.male):Container(),
+                  child: widget.showMannequin?AvatarWidget(_width, _height, gender: PersonService.person.gender??Gender.female):Container(),
                 ),
                 widget.combine!=null?Stack(
                     children: widget.combine!.items.map((e) => SizedBox(
@@ -77,6 +78,15 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
                   height: _height,
                   child: _movableObjectWidget(),
                 ):Container(),
+                widget.onRefreshClicked==null?Container():Positioned(
+                  bottom: 10,
+                  right: 10,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.grey,
+                    child: Icon(Icons.refresh, color: Colors.white,),
+                    onPressed: () => widget.onRefreshClicked!.call(),
+                  )
+                )
               ],
             ),
           ],

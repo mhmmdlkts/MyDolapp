@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,12 +13,14 @@ class Item {
   late Matrix4 matrix;
   String? base64;
   ItemDownloadLinks links = ItemDownloadLinks();
+  // late Color color;
 
   Item.fromDoc(QueryDocumentSnapshot<Object?> element) {
     id = element.id;
     type = ItemTypeService.stringToEnum(element.get('type'));
     createTime = element.get('create_time');
     matrix = decodeMatrix4(element.get('matrix'));
+    // color = Color(element.get('colorHex'));
   }
 
   Item() {

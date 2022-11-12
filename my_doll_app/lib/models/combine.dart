@@ -14,14 +14,20 @@ class Combine {
     createTime = Timestamp.now();
   }
 
-  void random(Wardrobe? wardrobe) {
+  void random(Wardrobe? wardrobe, {Item? oldItem}) {
     if (wardrobe == null) {
       return;
     }
-    items.clear();
-    List<ItemType> validCombineTypes = [ItemType.tShirt, ItemType.pants];
+    List<ItemType> validCombineTypes;
+    if (oldItem == null) {
+      items.clear();
+      validCombineTypes = [ItemType.tShirt, ItemType.pants];
+    } else {
+      items.removeWhere((element) => element.type == oldItem.type);
+      validCombineTypes = [oldItem!.type];
+    }
     for (ItemType type in validCombineTypes) {
-      List<Item> subItems = wardrobe.getAllTypes(type);
+      List<Item> subItems = wardrobe.getAllTypes(type).where((element) => oldItem==null || element.id != oldItem!.id).toList();
       if (subItems.isNotEmpty) {
         items.add(subItems[Random().nextInt(subItems.length)]);
       }

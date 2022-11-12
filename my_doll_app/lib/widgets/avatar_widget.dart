@@ -40,9 +40,9 @@ class _AvatarWidgetState extends State<AvatarWidget> {
             255, 190, 133, 111)),
         getImagePart(widget.gender, 'hair', color: Color.fromARGB(
             255, 33, 26, 25)),
-        getImagePart(widget.gender, 'outline'),
         getImagePart(widget.gender, 'underwear', color: Color.fromARGB(
             255, 255, 255, 255)),
+        getImagePart(widget.gender, 'outline'),
       ],
     );
   }

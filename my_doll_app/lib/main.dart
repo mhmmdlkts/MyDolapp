@@ -42,7 +42,7 @@ class _MyApp extends State<MyApp> {
     return MaterialApp(
       title: 'My DolApp',
       theme: ThemeData(
-        primarySwatch: Colors.brown,
+        primarySwatch: Colors.red,
         appBarTheme: Theme.of(context).appBarTheme.copyWith(systemOverlayStyle:SystemUiOverlayStyle.light),
       ),
       home: StreamBuilder(

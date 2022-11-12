@@ -1,12 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_doll_app/enums/item_type_enum.dart';
-import 'package:my_doll_app/models/combine.dart';
 import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
 import 'package:my_doll_app/screens/add_item_screen.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
-import 'package:my_doll_app/widgets/item_on_avatar.dart';
+import 'package:simple_shadow/simple_shadow.dart';
 
 class WardrobeScreen extends StatefulWidget {
   const WardrobeScreen({super.key});
@@ -21,6 +22,9 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   final List<ItemType> openTypes = [ItemType.tShirt, ItemType.pants];
   Wardrobe? wardrobe;
 
+  Offset shadowOffset = Offset(4, 4);
+  Color backgroundColor = Colors.black.withOpacity(0.05);
+
   @override
   void initState() {
     super.initState();
@@ -29,101 +33,189 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Stack(
-        children: [
-          wardrobe==null?const Center(child: CircularProgressIndicator()):Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ReorderableListView(
-                shrinkWrap: true,
-                children: types.map(_getAllTypes).toList(),
-                onReorder: (int oldIndex, int newIndex) {
-                  setState(() {
-                    if (newIndex > oldIndex) {
-                      newIndex = newIndex - 1;
-                    }
-                    final element = types.removeAt(oldIndex);
-                    types.insert(newIndex, element);
-                  });
-                },
-              )
-            ],
+    return Stack(
+      children: [
+        Container(
+          color: backgroundColor,
+          child: SafeArea(
+            bottom: false,
+            child: wardrobe==null?const Center(child: CircularProgressIndicator()):CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  backgroundColor: Colors.transparent,
+                  expandedHeight: 150,
+                  stretch: true,
+                  title: Text('My Wardrobes', style: TextStyle(color: Colors.black)),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Container(
+                      padding: EdgeInsets.only(top: 50),
+                      alignment: Alignment.center,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: WardrobeService.wardrobes.length + 1,
+                        itemBuilder: (ctx,i) => _changeWardrobeButton(i),
+                      ),
+                    ),
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) => _getAllTypes(ItemType.values[index]),
+                    childCount: ItemType.values.length,
+                  ),
+                ),
+              ],
+            ),
           ),
-          wardrobe != null?Positioned(
-            bottom: 10,
-            right: 10,
-            child: FloatingActionButton(
-              child: const Icon(Icons.add),
-              backgroundColor: Colors.brown.withOpacity(0.4),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddItemScreen(wardrobe: wardrobe!)),
-                );
-              },
-            )
-          ):Container()
-        ],
-      ),
+        ),
+        Positioned(
+          bottom: 20,
+          right: 20,
+          child: FloatingActionButton(
+            backgroundColor: Colors.white,
+            child: Icon(Icons.add, color: Colors.black,),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddItemScreen(wardrobe: wardrobe!)),
+              );
+            },
+          ),
+        )
+      ],
     );
   }
 
   Widget _getAllTypes(ItemType type) => Column(
-    key: ValueKey(type),
-    children: [
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: wardrobe!.itemCount(type: type)! > 0?[
       Container(
-        color: Colors.brown.withOpacity(0.4),
-        child: Column(
-          children: [
-            Container(
-              color: Colors.black45,
-              padding: EdgeInsets.only(left: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(ItemTypeService.enumToReadableString(type), style: TextStyle(color: Colors.white),),
-                  Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (openTypes.contains(type)) {
-                                openTypes.remove(type);
-                              } else {
-                                openTypes.add(type);
-                              }
-                            });
-                          },
-                          icon: Icon(openTypes.contains(type)?Icons.keyboard_arrow_down:Icons.keyboard_arrow_up, color: Colors.white,)
-                      ),
-                      const IconButton(
-                          onPressed: null,
-                          icon: Icon(Icons.reorder, color: Colors.white,)
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-            openTypes.contains(type)?SizedBox(
-              height: 175,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: wardrobe!.itemCount(type: type),
-                itemBuilder: (context, index) => Container(
-                  padding: const EdgeInsets.all(10),
-                  child: _itemWidget((wardrobe!.getItem(index, type: type))!),
-                ),
-              ),
-            ):Container()
-          ],
-        ),
+        alignment: Alignment.topLeft,
+        margin: EdgeInsets.only(left: 8, bottom: 10),
+        child: Text(ItemTypeService.enumToReadableString(type), style: TextStyle(color: Colors.black, fontSize: 20),),
       ),
-      Divider(height: 0, color: Colors.black,)
-    ],
+        Container(
+          margin: EdgeInsets.only(bottom: 50),
+          child: SizedBox(
+            height: 200,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: wardrobe!.itemCount(type: type),
+              itemBuilder: (context, index) {
+                Item item = (wardrobe!.getItem(index, type: type))!;
+                return Container(
+                  margin: const EdgeInsets.all(10),
+                  child: Material(
+                    color: Colors.white,
+                    child: InkWell(
+                      onTap: () {
+                        print(item.id);
+                      },
+                      child: _itemWidget(item),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        )
+    ]:[],
   );
 
-  Widget _itemWidget(Item item) => Image.network(item.links!.thumb_600!);
+  Widget _changeWardrobeButton(int i) {
+    bool isAddNewButton = i >= WardrobeService.wardrobes.length;
+    Wardrobe? wardrobe;
+    if (!isAddNewButton) {
+      wardrobe = WardrobeService.wardrobes[i];
+    }
+    bool isSame = this.wardrobe!.id == (wardrobe?.id??'');
+    return Container(
+      alignment: Alignment.center,
+      // padding: EdgeInsets.only(top: 100),
+      margin: EdgeInsets.symmetric(vertical: 5),
+      child: SizedBox(
+        width: 100,
+        child: Center(
+          child: ListView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: [
+              InkWell(
+                borderRadius: BorderRadius.circular(5),
+                onTap: isSame?null:() {
+                  setState(() {
+                    if (!isAddNewButton) {
+                      this.wardrobe = wardrobe;
+                    } else {
+                      // TODO Add new wardrobe screen
+                    }
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Icon(isAddNewButton?Icons.add:Icons.checkroom, color: Colors.black, size: 35,),
+                      Text(isAddNewButton?'Add New':wardrobe!.name, style: TextStyle(fontSize: 10, color: Colors.black), textAlign: TextAlign.center),
+                    ],
+                  ),
+                ),
+              ),
+              Opacity(opacity: isSame?1:0, child: Icon(Icons.arrow_drop_down, color: Colors.black,),)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
+  Widget _itemWidget(Item item) => Container(
+    width: 150,
+    height: 200,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(3)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.15),
+          spreadRadius: 2,
+          blurRadius: 5,
+          offset: shadowOffset,
+        ),
+      ],
+    ),
+    child: Column(
+      children: [
+        SizedBox(
+          height: 140,
+          width: 140,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                height: 80,
+                width: 120,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.02),
+                  borderRadius: BorderRadius.all(Radius.circular(3)),
+
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(20),
+                child: _widgetWithShadow(item.links!.thumb_600!),
+              ),
+            ],
+          ),
+        ),
+        Text(ItemTypeService.enumToReadableString(item.type), style: TextStyle(fontWeight: FontWeight.bold),)
+      ],
+    ),
+  );
+
+  Widget _widgetWithShadow(String url) => SimpleShadow(
+    offset: shadowOffset,
+    sigma: 4,
+    child: Image.network(url),
+  );
 }

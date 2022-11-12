@@ -22,7 +22,7 @@ class _FirstScreenState extends State<FirstScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = 2;
+    _selectedIndex = 3;
     InitService.init(onInited: { context.hashCode: () => {
       if (PersonService.isInited() && !PersonService.person.isDataComplete()) {
         setState((){ showSplashScreen = false; })
@@ -55,7 +55,6 @@ class _FirstScreenState extends State<FirstScreen> {
     if (!PersonService.isInited()) {
       return Container();
     }
-    print(PersonService.person.gender);
     if (!PersonService.person.isDataComplete()) {
       return GetAdditionalInfoScreen(PersonService.person);
     }

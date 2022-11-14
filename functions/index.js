@@ -104,7 +104,7 @@ exports.onNewItemUploaded = functions.region(region).storage.object().onFinalize
     const contentType = object.contentType;
     const fileName = path.basename(filePath);
 
-    if (filePath.split('/')[1] != 'Items' || fileName != 'original.png') {
+    if (filePath.split('/')[2] != 'items' || fileName != 'img') {
         return;
     }
     if (!contentType.startsWith('image/')) {

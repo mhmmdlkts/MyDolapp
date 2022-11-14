@@ -75,3 +75,14 @@ extension StringCasingExtension on String {
   String toCapitalized() => length > 0 ?'${this[0].toUpperCase()}${substring(1).toLowerCase()}':'';
   String toTitleCase() => replaceAll(RegExp(' +'), ' ').split(' ').map((str) => str.toCapitalized()).join(' ');
 }
+
+extension HexColor on Color {
+
+  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+  String toHex({bool leadingHashSign = true, bool withAlpha = true}) =>
+      '${leadingHashSign ? '#' : ''}'
+      '${withAlpha ? alpha.toRadixString(16).padLeft(2, '0').toUpperCase() : ''}'
+      '${red.toRadixString(16).padLeft(2, '0').toUpperCase()}'
+      '${green.toRadixString(16).padLeft(2, '0').toUpperCase()}'
+      '${blue.toRadixString(16).padLeft(2, '0').toUpperCase()}';
+}

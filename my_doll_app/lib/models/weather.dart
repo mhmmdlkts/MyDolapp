@@ -45,11 +45,11 @@ class Weather {
 
   AssetImage getImage() {
     switch (type) {
-      case WeatherType.sunny: return const AssetImage('assets/images/cloudy.png');
-      case WeatherType.cloudy: return const AssetImage('assets/images/cloudy.png');
-      case WeatherType.rainy: return const AssetImage('assets/images/rainy.png');
-      case WeatherType.heavyRainy: return const AssetImage('assets/images/rainy.png');
-      case WeatherType.snowy: return const AssetImage('assets/images/snowy.png');
+      case WeatherType.sunny: return const AssetImage('assets/images/weather/cloudy.png');
+      case WeatherType.cloudy: return const AssetImage('assets/images/weather/cloudy.png');
+      case WeatherType.rainy: return const AssetImage('assets/images/weather/rainy.png');
+      case WeatherType.heavyRainy: return const AssetImage('assets/images/weather/rainy.png');
+      case WeatherType.snowy: return const AssetImage('assets/images/weather/snowy.png');
     }
   }
 

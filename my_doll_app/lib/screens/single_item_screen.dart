@@ -29,13 +29,11 @@ class _SingleItemScreenState extends State<SingleItemScreen> with WidgetsBinding
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(ItemTypeService.enumToReadableString(widget.item.type))),
-      body: Container(
-        child: ImagePainter.network(
-          widget.item.links.original!,
-          key: _imageKey,
-          scalable: true,
-          initialPaintMode: PaintMode.freeStyle,
-        ),
+      body: ImagePainter.network(
+        widget.item.links!.thumb_1200!,
+        key: _imageKey,
+        scalable: true,
+        initialPaintMode: PaintMode.freeStyle,
       ),
     );
   }

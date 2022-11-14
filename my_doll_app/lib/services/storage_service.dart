@@ -1,16 +1,16 @@
-import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class StorageService {
 
-  static Future testFunc(String base64, String uid, String itemId) async {
-    final storageRef = FirebaseStorage.instance.ref(uid).child('Items').child(itemId).child('original.png');
+  static Future uploadImage(String base64, String itemId) async {
+    final storageRef = getItemRef(itemId, 'img');
     try {
       await storageRef.putString(base64, format: PutStringFormat.base64, metadata: SettableMetadata(contentType: 'image/png'));
     } catch (e) {
       print(e);
     }
-    return null;
   }
+
+  static Reference getItemRef(String itemId, String imgName) => FirebaseStorage.instance.ref('users').child(FirebaseAuth.instance.currentUser!.uid).child('items').child(itemId).child(imgName);
 }

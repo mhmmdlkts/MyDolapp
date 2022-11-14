@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>LSApplicationQueriesSchemes</key>
+	<array/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -28,6 +30,14 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>TODO Edit me</string>
+	<key>NSCameraUsageDescription</key>
+    <string>TODO Edit me</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>TODO Edit me</string>
+    <key>NSBonjourServices</key>
+    <array>
+        <string>_dartobservatory._tcp</string>
+    </array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

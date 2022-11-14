@@ -222,7 +222,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   );
 
   void _showItemDialog(Item item) async {
-    await item.getOriginalLink();
+    await item.links!.init1200();
 
     Size size = MediaQuery.of(context).size;
 
@@ -267,7 +267,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                             color: Colors.transparent,
                           ),
 
-                          imageProvider: NetworkImage(item.links!.original!),
+                          imageProvider: NetworkImage(item.links!.thumb_1200!),
                           enableRotation: false,
                           gaplessPlayback: true,
                           onScaleEnd: (ctx, details, value) {

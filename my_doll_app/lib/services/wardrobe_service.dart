@@ -37,7 +37,7 @@ class WardrobeService {
     for (var element in querySnapshot.docs) {
       Item item = Item.fromDoc(element);
       items.add(item);
-      urlTasks.add(item.getThumbLink());
+      urlTasks.add(item.initImageUrls());
     }
     await Future.wait(urlTasks);
     return items;
@@ -50,13 +50,14 @@ class WardrobeService {
     return wardrobes.first;
   }
 
-  static Future addItem(Wardrobe wardrobe, Item item) async {
+  static Future<String> addItem(Wardrobe wardrobe, Item item) async {
     CollectionReference col = FirestorePathsService.getItemsCollection(wardrobe.id)!;
     String id = col.doc().id;
     if (item.base64 != null) {
-      await StorageService.testFunc(item.base64!, FirebaseAuth.instance.currentUser!.uid, id);
+      await StorageService.uploadImage(item.base64!, id);
     }
     await col.doc(id).set(item.toData());
+    return id;
   }
 
 }

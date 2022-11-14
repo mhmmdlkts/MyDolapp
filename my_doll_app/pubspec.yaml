@@ -35,11 +35,15 @@ dependencies:
   photo_view: ^0.14.0
   image_painter: ^0.4.6
   device_info_plus: ^8.0.0
+  version: ^3.0.2
+  flutter_shake_animated: ^0.0.5
+  camera: ^0.10.0+4
+  image_picker: ^0.8.6
   # location: ^4.4.0
 
 
-  # ej_stepper: ^0.1.0 TODO dont delete me add licences
-  # day_night_time_picker: ^1.1.3 TODO dont delete me add licences
+  # ej_stepper: ^0.1.0 TODO don't delete me add licences
+  # day_night_time_picker: ^1.1.3 TODO don't delete me add licences
 
 
 dev_dependencies:
@@ -51,6 +55,9 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
+    - assets/images/helper/
+    - assets/images/helper/gif/
     - assets/images/avatar/
+    - assets/images/weather/
 
   uses-material-design: true

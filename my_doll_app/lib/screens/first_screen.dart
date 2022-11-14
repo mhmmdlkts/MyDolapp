@@ -1,11 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_doll_app/screens/get_additional_info_screen.dart';
 import 'package:my_doll_app/screens/home_screen.dart';
 import 'package:my_doll_app/screens/splash_screen.dart';
 import 'package:my_doll_app/screens/wardrobe_screen.dart';
+import 'package:my_doll_app/services/auth_service.dart';
 import 'package:my_doll_app/services/init_service.dart';
 import 'package:my_doll_app/services/person_service.dart';
-import 'package:my_doll_app/services/wardrobe_service.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
@@ -22,7 +23,7 @@ class _FirstScreenState extends State<FirstScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = 2;
+    _selectedIndex = 3;
     InitService.init(onInited: { context.hashCode: () => {
       if (PersonService.isInited() && !PersonService.person.isDataComplete()) {
         setState((){ showSplashScreen = false; })
@@ -92,6 +93,11 @@ class _FirstScreenState extends State<FirstScreen> {
     switch (_selectedIndex) {
       case 2: return const HomeScreen();
       case 3: return const WardrobeScreen();
+      case 4: return Center(
+        child: ElevatedButton(onPressed: () {
+          FirebaseAuth.instance.signOut();
+        }, child: Icon(Icons.logout)),
+      );
     }
     return const Center(child: Text('...'));
   }

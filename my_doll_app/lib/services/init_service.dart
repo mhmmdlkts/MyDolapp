@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:my_doll_app/services/camera_service.dart';
 import 'package:my_doll_app/services/person_service.dart';
 import 'package:my_doll_app/services/system_service.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
@@ -21,7 +22,8 @@ class InitService {
     List<Future> toDo = [
       WardrobeService.fetchWardrobes(),
       PersonService.initPerson(),
-      SystemService.init()
+      SystemService.init(),
+      CameraService.initCameras()
     ];
     await Future.wait(toDo);
     isInited = true;

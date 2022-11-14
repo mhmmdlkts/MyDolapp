@@ -241,10 +241,10 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
       return !_willChoseFromGallery! || !SystemService.isSupportingIsolateImage?
       2:3;
     }
-
+    /* // TODO Remove me with vsl
     if (!isCropDone) {
       return 4;
-    }
+    }*/
 
     return 5;
   }
@@ -255,6 +255,7 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
     switch (step) {
       case 5:
         isCropDone = false;
+        img = null; // TODO Remove me with vsl
         break;
       case 4:
         img = null;

@@ -210,7 +210,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
               ),
               Container(
                 padding: EdgeInsets.all(20),
-                child: _widgetWithShadow(item.links!.thumb_600!),
+                child: _widgetWithShadow(item.images!.thumb_600!),
               ),
             ],
           ),
@@ -222,13 +222,14 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   );
 
   void _showItemDialog(Item item) async {
-    await item.links!.init1200();
+    ValueNotifier<Uint8List?> notifier = ValueNotifier(null);
+    await item.images!.init1200().then((value) {
+      notifier.value = item.images!.thumb_1200;
+    });
 
     Size size = MediaQuery.of(context).size;
-
     showDialog(
       context: context,
-
       builder: (ctx) => GestureDetector(
         onTap: () {
           Navigator.pop(context, false);
@@ -261,19 +262,19 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     child: ClipRect(
                       child: Container(
                         padding: EdgeInsets.all(20),
-                        child: PhotoView(
+                        child: notifier.value==null?CircularProgressIndicator():Image.memory(notifier.value!)/*PhotoView(
                           controller: _photoViewController,
                           backgroundDecoration: BoxDecoration(
                             color: Colors.transparent,
                           ),
 
-                          imageProvider: NetworkImage(item.links!.thumb_1200!),
+                          imageProvider: AssetImage(item.images!.thumb_1200!),
                           enableRotation: false,
                           gaplessPlayback: true,
                           onScaleEnd: (ctx, details, value) {
                             _photoViewController.reset();
                           },
-                        ),
+                        ),*/
                       ),
                     ),
                   ),
@@ -294,9 +295,9 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     print(item.id);
   }
 
-  Widget _widgetWithShadow(String url) => SimpleShadow(
+  Widget _widgetWithShadow(Uint8List img) => SimpleShadow(
     offset: shadowOffset,
     sigma: 4,
-    child: Image.network(url),
+    child: Image.memory(img),
   );
 }

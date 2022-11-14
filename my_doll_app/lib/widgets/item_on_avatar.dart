@@ -102,7 +102,7 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
       transform: item.matrix,
       child: InkWell(
         onTap: widget.onItemClicked==null?null: () => widget.onItemClicked!.call(item),
-        child: item.links?.thumb_600!=null?Image.network(item.links!.thumb_600!):Container()
+        child: item.images?.thumb_600!=null?Image.memory(item.images!.thumb_600!):Container()
       ),
     ),
   );

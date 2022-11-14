@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_doll_app/enums/item_type_enum.dart';
@@ -11,7 +13,7 @@ class Item {
   late Timestamp createTime;
   late Matrix4 matrix;
   String? base64;
-  ItemDownloadLinks? links;
+  ItemImages? images;
   late Color color;
   late String colorName;
 
@@ -42,8 +44,11 @@ class Item {
   }
   
   Future initImageUrls() async {
-    links = ItemDownloadLinks(id!);
-    await links?.init();
+    if (images != null) {
+      return;
+    }
+    images = ItemImages(id!);
+    await images?._init();
   }
 
   Item({required this.type, required this.matrix, required this.base64}) {
@@ -57,29 +62,7 @@ class Item {
     'matrix': encodeMatrix4(matrix),
     'colorHex': color.toHex(withAlpha: false)
   };
-/*
-  Future getThumbLink() async {
-    if (links?.thumb_600 != null) {
-      return;
-    }
 
-    final Reference storageRef = StorageService.getItemRef(id!, 'img_600x600');
-
-    final String thumb_600 = await storageRef.child('600x600.png').getDownloadURL();
-    links?.thumb_600 = thumb_600;
-  }
-
-  Future<void> getOriginalLink() async {
-    if (links.original != null) {
-      return;
-    }
-
-    final Reference storageRef = StorageService.getItemRef(id!, 'img_600x600.png');
-
-    final String original = await storageRef.getDownloadURL();
-    links.original = original;
-  }
-*/
   static Matrix4 decodeMatrix4(String? matrix) {
     if (matrix == null) {
       return Matrix4.identity();
@@ -109,36 +92,46 @@ class Item {
   }
 }
 
-class ItemDownloadLinks {
+class ItemImages {
   String itemId;
-  late String thumb_50;
-  late String thumb_100;
-  late String thumb_200;
-  late String thumb_400;
-  late String thumb_600;
-  String? thumb_800;
-  String? thumb_1200;
-  String? thumb_2000;
+  late Uint8List? thumb_50;
+  late Uint8List? thumb_100;
+  late Uint8List? thumb_200;
+  late Uint8List? thumb_400;
+  late Uint8List? thumb_600;
+  Uint8List? thumb_800;
+  Uint8List? thumb_1200;
+  Uint8List? thumb_2000;
 
-  ItemDownloadLinks(this.itemId);
+
+  ItemImages(this.itemId);
   
-  Future init() async {
-    // thumb_50 = await StorageService.getItemRef(itemId, 'img_50x50').getDownloadURL();
-    // thumb_100 = await StorageService.getItemRef(itemId, 'img_100x100').getDownloadURL();
-    // thumb_200 = await StorageService.getItemRef(itemId, 'img_200x200').getDownloadURL();
-    // thumb_400 = await StorageService.getItemRef(itemId, 'img_400x400').getDownloadURL();
-    thumb_600 = await StorageService.getItemRef(itemId, '600x600.png').getDownloadURL();
+  Future _init() async {
+    thumb_50 = await StorageService.getItemRef(itemId, 'img_50x50').getData();
+    thumb_100 = await StorageService.getItemRef(itemId, 'img_100x100').getData();
+    thumb_200 = await StorageService.getItemRef(itemId, 'img_200x200').getData();
+    thumb_400 = await StorageService.getItemRef(itemId, 'img_400x400').getData();
+    thumb_600 = await StorageService.getItemRef(itemId, 'img_600x600').getData();
   }
   
   Future init800() async {
-    thumb_800 ??= await StorageService.getItemRef(itemId, 'img_800x800').getDownloadURL();
+    if (thumb_800 != null) {
+      return;
+    }
+    thumb_800 = await StorageService.getItemRef(itemId, 'img_800x800').getData();
   }
   
-  Future init1200() async {                             // TODO
-    thumb_1200 ??= await StorageService.getItemRef(itemId, 'img').getDownloadURL();
+  Future init1200() async {
+    if (thumb_1200 != null) {
+      return;
+    }
+    thumb_1200 = await StorageService.getItemRef(itemId, 'img_1200x1200').getData();
   }
   
   Future init2000() async {
-    thumb_2000 ??= await StorageService.getItemRef(itemId, 'img_2000x2000').getDownloadURL();
+    if (thumb_2000 != null) {
+      return;
+    }
+    thumb_2000 = await StorageService.getItemRef(itemId, 'img_2000x2000').getData();
   }
 }

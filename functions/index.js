@@ -97,7 +97,7 @@ async function checkIsValidMethod(uid, security_key, email) {
     return userExist;
 }
 
-exports.onNewItemUploaded = functions.region(region).storage.object().onFinalize(async (object) => {
+/*exports.onNewItemUploaded = functions.region(region).storage.object().onFinalize(async (object) => {
 
     const fileBucket = object.bucket;
     const filePath = object.name;
@@ -127,7 +127,7 @@ exports.onNewItemUploaded = functions.region(region).storage.object().onFinalize
         metadata: metadata,
     });
     return fs.unlinkSync(tempFilePath);
-});
+});*/
 
 async function createNewWardrobe(uid, wardrobeName) {
     const wardrobe = {

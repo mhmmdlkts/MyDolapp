@@ -19,8 +19,14 @@ exports.onNewUserCreate = functions.region(region).auth.user().onCreate(async (u
     await createNewWardrobe(user.uid, 'My Wardrobe')
 });
 
-exports.updateColorName = functions.region(region).firestore.document('users/{userId}/wardrobes/{wardrobeId}/items/{itemId}').onUpdate((change, context) => {
+exports.updateColorName = functions.region(region).firestore.document('users/{userId}/wardrobes/{wardrobeId}/items/{itemId}').onWrite((change, context) => {
+    const colorHexBefore = change.before.data()[['colorHex']];
     const colorHex = change.after.data()[['colorHex']];
+    const colorNameBefore = change.before.data()[['colorName']];
+    const colorName = change.after.data()[['colorName']];
+    if (colorName == colorNameBefore && colorHex == colorHexBefore) {
+        return;
+    }
     let name
     if (colorHex != undefined) {
         name = ntc.name(colorHex)[1];
@@ -132,17 +138,10 @@ async function checkIsValidMethod(uid, security_key, email) {
 async function createNewWardrobe(uid, wardrobeName) {
     const wardrobe = {
         name: wardrobeName,
-        create_time: admin.firestore.Timestamp.now()
+        create_time: admin.firestore.Timestamp.now(),
+        is_default: true
     }
     await admin.firestore().collection('users').doc(uid).collection('wardrobes').add(wardrobe).then(async function(docRef) {
-        await addNewCloth(uid, docRef.id, 'tShirt')
-    });
-}
 
-async function addNewCloth(uid, wardrobeId, itemType) {
-    const item = {
-        type: itemType,
-        create_time: admin.firestore.Timestamp.now()
-    }
-    await admin.firestore().collection('users').doc(uid).collection('wardrobes').doc(wardrobeId).collection('items').add(item);
+    });
 }

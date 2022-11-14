@@ -30,7 +30,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> with WidgetsBinding
     return Scaffold(
       appBar: AppBar(title: Text(ItemTypeService.enumToReadableString(widget.item.type))),
       body: ImagePainter.memory(
-        widget.item.images!.thumb_1200!,
+        widget.item.images!.getBestQuality(),
         key: _imageKey,
         scalable: true,
         initialPaintMode: PaintMode.freeStyle,

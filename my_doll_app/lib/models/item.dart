@@ -7,7 +7,7 @@ import 'package:my_doll_app/main.dart';
 import 'package:my_doll_app/services/storage_service.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-class Item {
+class Item implements Comparable {
   String? id;
   ItemType type = ItemType.other;
   late Timestamp createTime;
@@ -90,6 +90,9 @@ class Item {
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
   }
+
+  @override
+  int compareTo(other) => createTime?.compareTo(other.createTime)??0;
 }
 
 class ItemImages {
@@ -133,5 +136,33 @@ class ItemImages {
       return;
     }
     thumb_2000 = await StorageService.getItemRef(itemId, 'img_2000x2000').getData();
+  }
+
+  Uint8List getBestQuality() {
+    if (thumb_2000 != null) {
+      return thumb_2000!;
+    }
+    if (thumb_1200 != null) {
+      return thumb_1200!;
+    }
+    if (thumb_800 != null) {
+      return thumb_800!;
+    }
+    if (thumb_600 != null) {
+      return thumb_600!;
+    }
+    if (thumb_400 != null) {
+      return thumb_400!;
+    }
+    if (thumb_200 != null) {
+      return thumb_200!;
+    }
+    if (thumb_100 != null) {
+      return thumb_100!;
+    }
+    if (thumb_50 != null) {
+      return thumb_50!;
+    }
+    return Uint8List.fromList([]);
   }
 }

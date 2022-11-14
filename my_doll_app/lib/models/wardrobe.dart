@@ -4,7 +4,7 @@ import 'package:my_doll_app/services/wardrobe_service.dart';
 
 import 'item.dart';
 
-class Wardrobe {
+class Wardrobe implements Comparable {
   late String id;
   late String name;
   late Timestamp createTime;
@@ -53,6 +53,7 @@ class Wardrobe {
     _items!.where((element) => element.type == type).forEach((element) {
       items.add(element);
     });
+    items.sort();
     return items;
   }
 
@@ -61,5 +62,12 @@ class Wardrobe {
     'is_default': isDefault,
     'create_time': createTime,
   };
+
+  @override
+  int compareTo(other) => createTime?.compareTo(other.createTime)??0;
+
+  void addItem(Item item) {
+    _items?.add(item);
+  }
 
 }

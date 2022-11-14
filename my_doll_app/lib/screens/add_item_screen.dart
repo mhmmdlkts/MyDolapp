@@ -27,18 +27,19 @@ class AddItemScreen extends StatefulWidget {
 
 class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserver {
 
-  Uint8List? img;
-  Uint8List? foundImg;
   final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity()); // TODO Maybe delete me
-  bool _isUploading = false;
-  bool? _willChoseFromGallery;
-  Color? color;
-  ItemType? itemType;
   final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(5));
   CameraController? controller;
+
   bool takePicturePressed = false;
-  bool isCropDone = false;
+
   Matrix4 matrix = Matrix4.identity();
+  bool isCropDone = false;
+  bool _isUploading = false;
+  bool? _willChoseFromGallery;
+  Uint8List? foundImg;
+  ItemType? itemType;
+  Uint8List? img;
 
   @override
   void initState() {
@@ -127,19 +128,32 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
     });
   }
 
-  Future upload () async {
+  _repeatSteps() {
+    itemType = null;
+    img = null;
+    foundImg = null;
+    isCropDone = false;
+    Pasteboard.writeText('');
+  }
+
+  Future upload ({bool isDone = false}) async {
     if (_isUploading) {
       return;
     }
-    setState(() {
-      _isUploading = true;
-    });
     final base64String = base64.encode(img!);
     Item item = Item(type: itemType!, base64: base64String, matrix: matrix);
-    item.color = await getImagePalette(Image.memory(img!).image);
+    setState(() {
+      if (isDone) {
+        _isUploading = true;
+      } else {
+        _repeatSteps();
+      }
+    });
+    item.color = await getImagePalette(Image.memory(base64.decode(base64String)).image);
     WardrobeService.addItem(widget.wardrobe, item).then((value) => {
-      item.id = value,
-      Navigator.of(context).pop(item)
+      if (isDone) {
+        Navigator.of(context).pop(item)
+      }
     });
   }
 
@@ -169,19 +183,57 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
         },
       ),
       Container(height: 40,),
-      _getConfirmButton()
+      Opacity(opacity: _isUploading?0:1),
+      _getContinueButton(),
+      Container(height: 40,),
+      _getDoneButton(),
     ],
   );
 
-  Widget _getConfirmButton() {
+  Widget _getContinueButton() => InkWell(
+    onTap: _isUploading?null:() {
+      upload();
+    },
+    child: Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: _borderRadius,
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(4, 4),
+          ),
+        ],
+      ),
+      child: Text('Save & Continue', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+    ),
+  );
+
+  Widget _getDoneButton() {
     if (_isUploading) {
       return CircularProgressIndicator();
     }
-    return ElevatedButton(onPressed: () {
-      upload();
+    return InkWell(
+      onTap: () {
+      upload(isDone: true);
     }, child: Container(
-      padding: EdgeInsets.all(20),
-      child: Text('Confirm'),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: _borderRadius,
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(4, 4),
+          ),
+        ],
+      ),
+      child: Text('Save'),
     ));
   }
 
@@ -216,7 +268,7 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
     switch(_getStep()) {
       case 0: return _itemTypeStep();
       case 1: return _cameraOrGalleryStep();
-      case 2: return _willChoseFromGallery!?_choseFromGalleryStep():_takePictureStep();
+      case 2: return _willChoseFromGallery!?_cameraOrGalleryStep():_takePictureStep();
       case 3:
         if (_willChoseFromGallery! && SystemService.isSupportingIsolateImage && foundImg == null) {
           readImages();
@@ -279,10 +331,6 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
         return;
     }
     setState(() {});
-  }
-
-  Widget _choseFromGalleryStep() {
-    return Text('TO DO');
   }
 
   Widget _choseFromGalleryStepForSupportedIos() {

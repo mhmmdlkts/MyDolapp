@@ -26,6 +26,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   final List<ItemType> types = [ItemType.tShirt, ItemType.pants];
   final List<ItemType> openTypes = [ItemType.tShirt, ItemType.pants];
   Wardrobe? wardrobe;
+  bool _loadingWardrobe = false;
 
   Offset shadowOffset = Offset(4, 4);
   Color backgroundColor = Colors.black.withOpacity(0.05);
@@ -66,8 +67,13 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                 ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) => _getAllTypes(ItemType.values[index]),
-                    childCount: ItemType.values.length,
+                        (BuildContext context, int index) => _loadingWardrobe?Container(
+                          margin: EdgeInsets.only(top: 100),
+                          padding: EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width - 50)/2),
+                          height: 50,
+                          child: CircularProgressIndicator(),
+                        ):_getAllTypes(ItemType.values[index]),
+                    childCount: _loadingWardrobe?1:ItemType.values.length,
                   ),
                 ),
               ],
@@ -80,11 +86,14 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
           child: FloatingActionButton(
             backgroundColor: Colors.white,
             child: Icon(Icons.add, color: Colors.black,),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              dynamic res = Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AddItemScreen(wardrobe: wardrobe!)),
               );
+              if (res != null) {
+                setState(() { });
+              }
             },
           ),
         )
@@ -159,8 +168,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                 onTap: isSame?null:() {
                   setState(() {
                     if (!isAddNewButton) {
-                      this.wardrobe = wardrobe;
-                      print(wardrobe!.itemCount());
+                      _changeWardrobe(wardrobe!);
                     } else {
                       _openAddWardrobeScreen();
                     }
@@ -179,7 +187,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                   ),
                 )
               ),
-
               Opacity(opacity: isSame?1:0, child: Icon(Icons.arrow_drop_down, color: Colors.black,),)
             ],
           ),
@@ -198,7 +205,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   void _showContextMenu(Wardrobe wardrobe, BuildContext context) async {
     final RenderObject? overlay =
     Overlay.of(context)?.context.findRenderObject();
-
+    print(WardrobeService.wardrobes.length);
     final result = await showMenu(
         context: context,
 
@@ -210,21 +217,22 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
 
         // set a list of choices for the context menu
         items: [
-          const PopupMenuItem(
-            value: 'default',
-            child: Text('Set default'),
-          ),
+          if (!wardrobe.isDefault)
+            const PopupMenuItem(
+              value: 'default',
+              child: Text('Set default'),
+            ),
           const PopupMenuItem(
             value: 'edit',
             child: Text('Edit'),
           ),
-          const PopupMenuItem(
-            value: 'delete',
-            child: Text('Delete'),
-          ),
+          if (WardrobeService.wardrobes.length != 1)
+            const PopupMenuItem(
+              value: 'delete',
+              child: Text('Delete'),
+            ),
         ]);
 
-    // Implement the logic for each choice here
     switch (result) {
       case 'default':
         _setWardrobeAsDefault(wardrobe: wardrobe);
@@ -403,5 +411,16 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     );
 
     setState(() {});
+  }
+
+  void _changeWardrobe(Wardrobe wardrobe) async {
+    this.wardrobe = wardrobe;
+    setState(() {
+      _loadingWardrobe = true;
+    });
+    await wardrobe.loadItems();
+    setState(() {
+      _loadingWardrobe = false;
+    });
   }
 }

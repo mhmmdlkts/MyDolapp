@@ -24,6 +24,7 @@ class WardrobeService {
     for (var element in querySnapshot.docs) {
       wardrobes.add(Wardrobe.fromDoc(element));
     }
+    wardrobes.sort();
     await getDefaultWardrobe()?.loadItems();
   }
 
@@ -44,18 +45,24 @@ class WardrobeService {
   }
 
   static Wardrobe? getDefaultWardrobe() {
-    if (wardrobes.isEmpty) {
-      return null;
+    List<Wardrobe> defs = wardrobes.where((element) => element.isDefault).toList();
+    if (defs.isNotEmpty) {
+      return defs.first;
     }
-    return wardrobes.where((element) => element.isDefault).first;
+    if (wardrobes.isNotEmpty) {
+      return wardrobes.first;
+    }
+    return null;
   }
 
   static Future<String> addItem(Wardrobe wardrobe, Item item) async {
     CollectionReference col = FirestorePathsService.getItemsCollection(wardrobe.id)!;
     String id = col.doc().id;
+    item.id = id;
     if (item.base64 != null) {
       await StorageService.uploadImage(item.base64!, id);
     }
+    wardrobe.addItem(item);
     await col.doc(id).set(item.toData());
     return id;
   }

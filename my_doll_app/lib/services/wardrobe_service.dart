@@ -60,4 +60,32 @@ class WardrobeService {
     return id;
   }
 
+  static Future<String?> updateWardrobe(Wardrobe wardrobe) async {
+    DocumentReference? ref = FirestorePathsService.getWardrobeDoc(wardrobe.id);
+    if (ref == null) {
+      return null;
+    }
+    await ref!.update(wardrobe.toData());
+  }
+
+  static Future<String?> createWardrobe(Wardrobe wardrobe) async {
+    CollectionReference? ref = FirestorePathsService.getWardrobesCollection();
+    if (ref == null) {
+      return null;
+    }
+    DocumentReference newDocRef = await ref!.add(wardrobe.toData());
+    wardrobe.id = newDocRef.id;
+    wardrobes.add(wardrobe);
+    return newDocRef.id;
+  }
+
+  static Future removeWardrobe(Wardrobe wardrobe) async {
+    DocumentReference? ref = FirestorePathsService.getWardrobeDoc(wardrobe.id);
+    if (ref == null) {
+      return null;
+    }
+    await ref!.delete();
+    wardrobes.removeWhere((element) => element.id == wardrobe.id);
+  }
+
 }

@@ -6,6 +6,7 @@ import 'package:my_doll_app/enums/item_type_enum.dart';
 import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
 import 'package:my_doll_app/screens/add_item_screen.dart';
+import 'package:my_doll_app/screens/add_wardrobe_screen.dart';
 import 'package:my_doll_app/screens/single_item_screen.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
 import 'package:photo_view/photo_view.dart';
@@ -151,12 +152,17 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
             children: [
               InkWell(
                 borderRadius: BorderRadius.circular(5),
+                onTapDown: (details) => _getTapPosition(details),
+                onLongPress: () {
+                  _showContextMenu(wardrobe!, context);
+                },
                 onTap: isSame?null:() {
                   setState(() {
                     if (!isAddNewButton) {
                       this.wardrobe = wardrobe;
+                      print(wardrobe!.itemCount());
                     } else {
-                      // TODO Add new wardrobe screen
+                      _openAddWardrobeScreen();
                     }
                   });
                 },
@@ -168,14 +174,89 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                       Text(isAddNewButton?'Add New':wardrobe!.name, style: TextStyle(fontSize: 10, color: Colors.black), textAlign: TextAlign.center),
                     ],
                   ),
-                ),
+                )
               ),
+
               Opacity(opacity: isSame?1:0, child: Icon(Icons.arrow_drop_down, color: Colors.black,),)
             ],
           ),
         ),
       ),
     );
+  }
+
+  Offset _tapPosition = Offset.zero;
+
+  void _getTapPosition(TapDownDetails details) {
+    final RenderBox referenceBox = context.findRenderObject() as RenderBox;
+    _tapPosition = referenceBox.globalToLocal(details.globalPosition);
+  }
+
+  void _showContextMenu(Wardrobe wardrobe, BuildContext context) async {
+    final RenderObject? overlay =
+    Overlay.of(context)?.context.findRenderObject();
+
+    final result = await showMenu(
+        context: context,
+
+        // Show the context menu at the tap location
+        position: RelativeRect.fromRect(
+            Rect.fromLTWH(_tapPosition.dx, _tapPosition.dy, 30, 30),
+            Rect.fromLTWH(0, 0, overlay!.paintBounds.size.width,
+                overlay.paintBounds.size.height)),
+
+        // set a list of choices for the context menu
+        items: [
+          const PopupMenuItem(
+            value: 'edit',
+            child: Text('Edit'),
+          ),
+          const PopupMenuItem(
+            value: 'delete',
+            child: Text('Delete'),
+          ),
+        ]);
+
+    // Implement the logic for each choice here
+    switch (result) {
+      case 'edit':
+        _openAddWardrobeScreen(wardrobe: wardrobe);
+        break;
+      case 'delete':
+        _showDeleteWardrobeAlertDialog(wardrobe, context);
+        break;
+    }
+  }
+
+  _showDeleteWardrobeAlertDialog(Wardrobe wardrobe, BuildContext context) async {
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.of(context).pop(false);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Delete"),
+      onPressed:  () async {
+        await WardrobeService.removeWardrobe(wardrobe);
+        Navigator.of(context).pop(true);
+      },
+    );
+
+    bool? val = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Alert Dialog"),
+          content: Text("TO DO uyari mersaji hazirla parca sayisi: ${wardrobe.itemCount()} isim: ${wardrobe.name}"),
+          actions: [ cancelButton, continueButton ],
+        );
+      },
+    );
+
+    if (val??true) {
+      setState(() {});
+    }
   }
 
   Widget _itemWidget(Item item) => Container(
@@ -292,7 +373,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
       context,
       MaterialPageRoute(builder: (context) => SingleItemScreen(item: item!)),
     );
-    print(item.id);
   }
 
   Widget _widgetWithShadow(Uint8List img) => SimpleShadow(
@@ -300,4 +380,13 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     sigma: 4,
     child: Image.memory(img),
   );
+
+  Future _openAddWardrobeScreen({Wardrobe? wardrobe}) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddWardrobeScreen(wardrobe: wardrobe)),
+    );
+
+    setState(() {});
+  }
 }

@@ -10,6 +10,10 @@ class Wardrobe {
   late Timestamp createTime;
   List<Item>? _items;
 
+  Wardrobe({required this.name}) {
+    createTime = Timestamp.now();
+  }
+
   Wardrobe.fromDoc(QueryDocumentSnapshot doc) {
     id = doc.id;
 
@@ -47,4 +51,10 @@ class Wardrobe {
     });
     return items;
   }
+
+  Map<String, dynamic> toData() => {
+    'name': name,
+    'create_time': createTime,
+  };
+
 }

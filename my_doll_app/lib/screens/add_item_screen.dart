@@ -251,7 +251,6 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
 
   void _stepDown() {
     int step = _getStep();
-    print(step);
     switch (step) {
       case 5:
         isCropDone = false;

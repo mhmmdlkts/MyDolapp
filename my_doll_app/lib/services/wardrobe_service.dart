@@ -47,7 +47,7 @@ class WardrobeService {
     if (wardrobes.isEmpty) {
       return null;
     }
-    return wardrobes.first;
+    return wardrobes.where((element) => element.isDefault).first;
   }
 
   static Future<String> addItem(Wardrobe wardrobe, Item item) async {
@@ -86,6 +86,16 @@ class WardrobeService {
     }
     await ref!.delete();
     wardrobes.removeWhere((element) => element.id == wardrobe.id);
+  }
+
+  static Future setDefault(Wardrobe wardrobe) async {
+    List<Future> tasks = [];
+    for (var element in wardrobes) {
+      DocumentReference ref = FirestorePathsService.getWardrobeDoc(element.id)!;
+      element.isDefault = wardrobe.id == element.id;
+      tasks.add(ref.update({'is_default': element.isDefault}));
+    }
+    await Future.wait(tasks);
   }
 
 }

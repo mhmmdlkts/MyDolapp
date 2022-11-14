@@ -8,6 +8,7 @@ class Wardrobe {
   late String id;
   late String name;
   late Timestamp createTime;
+  bool isDefault = false;
   List<Item>? _items;
 
   Wardrobe({required this.name}) {
@@ -22,6 +23,9 @@ class Wardrobe {
 
     if (o.containsKey('name')) {
       name = o['name'];
+    }
+    if (o.containsKey('is_default')) {
+      isDefault = o['is_default'];
     }
     if (o.containsKey('create_time')) {
       createTime = o['create_time'];
@@ -54,6 +58,7 @@ class Wardrobe {
 
   Map<String, dynamic> toData() => {
     'name': name,
+    'is_default': isDefault,
     'create_time': createTime,
   };
 

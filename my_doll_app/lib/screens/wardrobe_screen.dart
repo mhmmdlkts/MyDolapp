@@ -170,7 +170,10 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                   padding: EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      Icon(isAddNewButton?Icons.add:Icons.checkroom, color: Colors.black, size: 35,),
+                      Opacity(
+                        opacity: wardrobe?.isDefault??true?1:0.7,
+                        child: Icon(isAddNewButton?Icons.add:Icons.checkroom, color: Colors.black, size: 35,),
+                      ),
                       Text(isAddNewButton?'Add New':wardrobe!.name, style: TextStyle(fontSize: 10, color: Colors.black), textAlign: TextAlign.center),
                     ],
                   ),
@@ -208,6 +211,10 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
         // set a list of choices for the context menu
         items: [
           const PopupMenuItem(
+            value: 'default',
+            child: Text('Set default'),
+          ),
+          const PopupMenuItem(
             value: 'edit',
             child: Text('Edit'),
           ),
@@ -219,6 +226,9 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
 
     // Implement the logic for each choice here
     switch (result) {
+      case 'default':
+        _setWardrobeAsDefault(wardrobe: wardrobe);
+        break;
       case 'edit':
         _openAddWardrobeScreen(wardrobe: wardrobe);
         break;
@@ -380,6 +390,11 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     sigma: 4,
     child: Image.memory(img),
   );
+
+  Future _setWardrobeAsDefault({required Wardrobe wardrobe}) async {
+    await WardrobeService.setDefault(wardrobe);
+    setState(() { });
+  }
 
   Future _openAddWardrobeScreen({Wardrobe? wardrobe}) async {
     await Navigator.push(

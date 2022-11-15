@@ -40,7 +40,16 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
   final double _width = 400;
   final double _height = 500;
   int position = 0;
+  int floor = 0;
   double val = 0;
+  List<int> floorList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    widget.combine?.items.forEach((key, value) => floorList.add(key));
+    floorList.sort();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,30 +78,78 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
                   child: widget.showMannequin?AvatarWidget(_width, _height, gender: PersonService.person.gender??Gender.female):Container(),
                 ),
                 widget.combine!=null?Stack(
-                    children: widget.combine!.items.map((e) => SizedBox(
+                    children: widget.combine!.items[floor]?.map((e) => SizedBox(
                       child: _showItems(e),
-                    )).toList()
+                    )).toList()??[]
                 ):Container(),
                 widget.movableItem!=null?SizedBox(
                   width: _width,
                   height: _height,
                   child: _movableObjectWidget(),
                 ):Container(),
-                widget.onRefreshClicked==null?Container():Positioned(
-                  bottom: 10,
-                  right: 10,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.grey,
-                    child: Icon(Icons.refresh, color: Colors.white,),
-                    onPressed: () => widget.onRefreshClicked!.call(),
-                  )
-                )
+                Positioned(
+                    bottom: 10,
+                    right: 10,
+                    child: Column(
+                      children: [
+                        if(widget.combine!.existStack())
+                          Column(
+                            children: [
+                              FloatingActionButton(
+                                backgroundColor: Colors.grey,
+                                child: Icon(Icons.arrow_drop_up, color: Colors.white,),
+                                onPressed: canUpdateFloor(true)?() => updateFloor(true):null,
+                              ),
+                              Container(height: 10,),
+                              Text(floor.toString(), style: TextStyle(color: Colors.white),),
+                              Container(height: 10,),
+                              FloatingActionButton(
+                                backgroundColor: Colors.grey,
+                                child: Icon(Icons.arrow_drop_down, color: Colors.white,),
+                                onPressed: canUpdateFloor(false)?() => updateFloor(false):null,
+                              ),
+                              Container(height: 30,)
+                            ],
+                          ),
+                        if (widget.onRefreshClicked!=null)
+                          FloatingActionButton(
+                            backgroundColor: Colors.grey,
+                            child: Icon(Icons.refresh, color: Colors.white,),
+                            onPressed: () => widget.onRefreshClicked!.call(),
+                          )
+                      ],
+                    )
+                ),
               ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  bool canUpdateFloor(bool up) {
+    if (floorList.isEmpty) {
+      return false;
+    }
+    if (up) {
+      return floorList.last != floor;
+    } else {
+      return floorList.first != floor;
+    }
+  }
+
+  void updateFloor(bool up) {
+    if (!canUpdateFloor(up)) {
+      return;
+    }
+    setState(() {
+      if (up) {
+        floor++;
+      } else {
+        floor--;
+      }
+    });
   }
 
   Widget _showItems(Item item) => SizedBox(

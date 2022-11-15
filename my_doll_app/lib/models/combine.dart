@@ -8,10 +8,17 @@ import 'package:my_doll_app/models/wardrobe.dart';
 class Combine {
   String? id;
   late Timestamp createTime;
-  List<Item> items = [];
+  late Map<int, List<Item>> items;
 
   Combine() {
     createTime = Timestamp.now();
+    clear();
+  }
+
+  void clear() {
+    items = {
+      0: []
+    };
   }
 
   void random(Wardrobe? wardrobe, {Item? oldItem}) {
@@ -20,17 +27,40 @@ class Combine {
     }
     List<ItemType> validCombineTypes;
     if (oldItem == null) {
-      items.clear();
+      clear();
       validCombineTypes = [ItemType.tShirt, ItemType.pants];
     } else {
-      items.removeWhere((element) => element.type == oldItem.type);
+      items[0]?.removeWhere((element) => element.type == oldItem.type);
       validCombineTypes = [oldItem!.type];
     }
     for (ItemType type in validCombineTypes) {
       List<Item> subItems = wardrobe.getAllTypes(type).where((element) => oldItem==null || element.id != oldItem!.id).toList();
       if (subItems.isNotEmpty) {
-        items.add(subItems[Random().nextInt(subItems.length)]);
+        items[0]?.add(subItems[Random().nextInt(subItems.length)]);
       }
     }
+    addTestFloor(wardrobe, oldItem);
+  }
+
+  addTestFloor(Wardrobe wardrobe, Item? oldItem) {
+    int floor = 1;
+    items[floor] = [];
+    for (ItemType type in [ItemType.tShirt, ItemType.pants]) {
+      List<Item> subItems = wardrobe.getAllTypes(type).where((element) => oldItem==null || element.id != oldItem!.id).toList();
+      if (subItems.isNotEmpty) {
+        items[floor]?.add(subItems[Random().nextInt(subItems.length)]);
+      }
+    }
+  }
+
+  bool existStack() {
+    bool check = false;
+    items.forEach((key, value) {
+      if (key != 0) {
+        check = true;
+        return;
+      }
+    });
+    return check;
   }
 }

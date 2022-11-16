@@ -255,7 +255,7 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
                  itemType = e;
                }), child: Center(
                  child: Text(ItemTypeService.enumToReadableString(e)),
-               ))).toList(),
+               ), marginTop: 0)).toList(),
              ),
            )
          ],
@@ -457,7 +457,7 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
     ),
   );
 
-  Widget _getPhotoGalleryButtons({required VoidCallback onPressed, required Widget child, double size = 100, bool disabled = false, bool recommended = false}) {
+  Widget _getPhotoGalleryButtons({required VoidCallback onPressed, required Widget child, double size = 100, bool disabled = false, bool recommended = false, double marginTop = 15}) {
     return Opacity(
       opacity: disabled?0.6:1,
       child: Column(
@@ -491,17 +491,18 @@ class _AddItemScreenState extends State<AddItemScreen> with WidgetsBindingObserv
               ),
             ),
           ),
-          Opacity(
-            opacity: recommended?1:0,
-            child: Container(
-              margin: EdgeInsets.only(top: 15),
-              height: 40,
-              width: size,
-              child: Center(
-                child: Text('Highly recommended', textAlign: TextAlign.center, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+          if (marginTop!=0)
+            Opacity(
+              opacity: recommended?1:0,
+              child: Container(
+                margin: EdgeInsets.only(top: marginTop),
+                height: 40,
+                width: size,
+                child: Center(
+                  child: Text('Highly recommended', textAlign: TextAlign.center, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),),
+                ),
               ),
-            ),
-          )
+            )
         ],
       ),
     );

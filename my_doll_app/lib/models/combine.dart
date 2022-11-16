@@ -28,7 +28,7 @@ class Combine {
     List<ItemType> validCombineTypes;
     if (oldItem == null) {
       clear();
-      validCombineTypes = [ItemType.tShirt, ItemType.pants];
+      validCombineTypes = [ItemType.sweater, ItemType.pants, ItemType.shoe];
     } else {
       items[0]?.removeWhere((element) => element.type == oldItem.type);
       validCombineTypes = [oldItem!.type];
@@ -45,7 +45,7 @@ class Combine {
   addTestFloor(Wardrobe wardrobe, Item? oldItem) {
     int floor = 1;
     items[floor] = [];
-    for (ItemType type in [ItemType.tShirt, ItemType.pants]) {
+    for (ItemType type in [ItemType.jacket]) {
       List<Item> subItems = wardrobe.getAllTypes(type).where((element) => oldItem==null || element.id != oldItem!.id).toList();
       if (subItems.isNotEmpty) {
         items[floor]?.add(subItems[Random().nextInt(subItems.length)]);

@@ -17,27 +17,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  Weather? weather;
   Wardrobe? wardrobe;
   Combine combine = Combine();
+
 
   @override
   void initState() {
     super.initState();
     wardrobe = WardrobeService.getDefaultWardrobe();
     combine.random(wardrobe);
-    WeatherService.getWeather().then((value) => {
-      if (mounted)
-        setState((){
-          weather = value;
-        })
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return WeatherBgWidget(
-      weather: weather,
       child: wardrobe==null?const Center(child: CircularProgressIndicator(color: Colors.white,)):Column(
         mainAxisSize: MainAxisSize.min,
         children: [

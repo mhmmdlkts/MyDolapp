@@ -18,6 +18,16 @@ class ItemTypeService {
         return 'T-Shirt';
       case ItemType.pants:
         return 'Pants';
+      case ItemType.shorts:
+        return 'Shorts';
+      case ItemType.shoe:
+        return 'Shoe';
+      case ItemType.coat:
+        return 'Coat';
+      case ItemType.jacket:
+        return 'Jacket';
+      case ItemType.sweater:
+        return 'Sweater';
       case ItemType.other:
         return 'Other';
     }
@@ -27,5 +37,11 @@ class ItemTypeService {
 enum ItemType {
   tShirt,
   pants,
-  other
+  shoe,
+  jacket,
+  coat,
+  shorts,
+  sweater,
+  other,
+
 }

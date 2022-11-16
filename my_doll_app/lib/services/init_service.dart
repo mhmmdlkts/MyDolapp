@@ -3,6 +3,7 @@ import 'package:my_doll_app/services/camera_service.dart';
 import 'package:my_doll_app/services/person_service.dart';
 import 'package:my_doll_app/services/system_service.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
+import 'package:my_doll_app/services/weather_service.dart';
 
 class InitService {
 
@@ -23,7 +24,8 @@ class InitService {
       WardrobeService.fetchWardrobes(),
       PersonService.initPerson(),
       SystemService.init(),
-      CameraService.initCameras()
+      CameraService.initCameras(),
+      WeatherService.initWeather()
     ];
     await Future.wait(toDo);
     isInited = true;

@@ -92,7 +92,7 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
                     right: 10,
                     child: Column(
                       children: [
-                        if(widget.combine!.existStack())
+                        if(widget.combine?.existStack()??false)
                           Column(
                             children: [
                               FloatingActionButton(

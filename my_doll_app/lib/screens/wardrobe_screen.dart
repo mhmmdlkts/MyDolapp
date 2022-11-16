@@ -303,7 +303,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                 height: 80,
                 width: 115,
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.035),
+                  color: item.color.withOpacity(0.3),
                   borderRadius: BorderRadius.all(Radius.circular(3)),
                 ),
               ),

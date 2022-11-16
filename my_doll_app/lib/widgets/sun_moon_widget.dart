@@ -18,21 +18,12 @@ class SunMoonWidget extends StatelessWidget {
   }
 
   final DateTime time;
+  final Weather? weather;
   const SunMoonWidget({
     Key? key,
     required this.time,
+    this.weather,
   }) : super(key: key);
-
-  Color? getColor(bool isDay, bool isDusk) {
-    return Colors.transparent;
-    if (!isDay) {
-      return Colors.blueGrey[900];
-    }
-    if (isDusk) {
-      return Colors.orange[400];
-    }
-    return Colors.blue[200];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +35,7 @@ class SunMoonWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 32),
       duration: const Duration(seconds: 1),
       height: 150,
-      color: getColor(Weather.isDay(hour), Weather.isDusk(hour)),
+      color: Colors.transparent,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final maxWidth = constraints.maxWidth.round() - sunMoonWidth;
@@ -64,7 +55,7 @@ class SunMoonWidget extends StatelessWidget {
                     switchInCurve: Curves.ease,
                     switchOutCurve: Curves.ease,
                     duration: const Duration(milliseconds: 250),
-                    child: Weather.isDay(hour)? Container(
+                    child: weather?.isDay(hour)??Weather.isDayStatic(hour)? Container(
                         key: const ValueKey(1),
                         child: const Image(
                           image: AssetImage( "assets/images/weather/sun.png"),

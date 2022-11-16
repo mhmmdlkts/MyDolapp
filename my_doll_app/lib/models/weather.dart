@@ -4,11 +4,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/weather.dart' as w;
 
+class Weather5Day {
+  List<Weather> list = [];
+
+  Weather5Day(List<w.Weather> weather, String country) {
+    weather.forEach((element) {
+      list.add(Weather.fromWeather(element, country));
+    });
+  }
+
+  Weather? getWeather(DateTime dateTime) {
+    if (dateTime.isBefore(DateTime.now().subtract(Duration(minutes: 1)))) {
+      return null;
+    }
+
+    final closetsDateTimeToNow = list.reduce(
+            (a, b) => a.dateTime.difference(dateTime).abs() < b.dateTime.difference(dateTime).abs() ? a : b);
+
+    return closetsDateTimeToNow;
+  }
+}
+
 class Weather {
   late double temp;
   late WeatherType type;
   late String country;
   late DateTime dateTime;
+  late w.Weather weather;
 
   Weather({required this.temp, required this.type, required this.country, required this.dateTime});
 
@@ -16,7 +38,8 @@ class Weather {
     temp = w.temperature?.celsius??0.0;
     this.country = country??'';
     type = conditionCodeToType(w.weatherConditionCode??0);
-    dateTime = DateTime.now();
+    dateTime = w.date??DateTime(1990);
+    weather = w;
   }
 
   String getReadableTemp() {
@@ -63,15 +86,25 @@ class Weather {
     }
   }
 
+  // TODO check that https://openweathermap.org/weather-conditions
   WeatherType conditionCodeToType(int weatherConditionCode) {
-    switch (weatherConditionCode) {
-      case 0: return WeatherType.rainy;
+    switch (weatherConditionCode.toString().characters.first) {
+      case '0': return WeatherType.rainy; // Thunderstorm
+      case '3': return WeatherType.rainy; // Drizzle
+      case '5': return WeatherType.rainy; // Rain
+      case '6': return WeatherType.snowy; // Snow
+      case '7': return WeatherType.rainy; // Atmosphere !!
+      case '8': return WeatherType.sunny; // Clear
+      case '9': return WeatherType.cloudy; // Clouds
     }
     return WeatherType.sunny;
   }
 
-  static bool isDay(hour) => hour >= 6 && hour <= 18;
-  static bool isDusk(hour) => hour >= 16 && hour <= 18;
+  static bool isDayStatic(hour) => hour >= 6 && hour <= 18;
+  bool isDay(hour) => hour >= _getSunriseHour() && hour <= _getSunsetHour();
+
+  int _getSunriseHour() => weather.sunrise?.hour??6;
+  int _getSunsetHour() => weather.sunset?.hour??18;
 }
 
 enum WeatherType {

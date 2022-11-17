@@ -27,8 +27,9 @@ class ItemOnAvatarWidget extends StatefulWidget {
   final void Function(Matrix4)? onMatrixUpdate;
   final void Function(Item)? onItemClicked;
   final VoidCallback? onRefreshClicked;
+  final VoidCallback? onAcceptClicked;
 
-  const ItemOnAvatarWidget({this.combine, this.movableItem, this.onMatrixUpdate, this.onItemClicked, this.onRefreshClicked, this.showMannequin = false, this.showShadow = false, super.key});
+  const ItemOnAvatarWidget({this.combine, this.movableItem, this.onMatrixUpdate, this.onItemClicked, this.onRefreshClicked, this.onAcceptClicked, this.showMannequin = false, this.showShadow = false, super.key});
 
   @override
   _ItemOnAvatarWidgetState createState() => _ItemOnAvatarWidgetState();
@@ -92,6 +93,13 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
                     right: 10,
                     child: Column(
                       children: [
+                        if(widget.onAcceptClicked != null)
+                          FloatingActionButton(
+                            backgroundColor: Colors.grey,
+                            child: Icon(Icons.done, color: Colors.white,),
+                            onPressed: widget.onAcceptClicked
+                          ),
+                        Container(height: 10,),
                         if(widget.combine?.existStack()??false)
                           Column(
                             children: [

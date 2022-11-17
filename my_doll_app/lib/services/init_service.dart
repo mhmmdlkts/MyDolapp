@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:my_doll_app/services/camera_service.dart';
+import 'package:my_doll_app/services/combine_service.dart';
 import 'package:my_doll_app/services/person_service.dart';
 import 'package:my_doll_app/services/system_service.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
@@ -20,14 +21,17 @@ class InitService {
       return;
     }
     isIniting = true;
+    DateTime now = DateTime.now();
     List<Future> toDo = [
-      WardrobeService.fetchWardrobes(),
-      PersonService.initPerson(),
-      SystemService.init(),
-      CameraService.initCameras(),
-      WeatherService.initWeather()
+      WardrobeService.initWardrobes(now: now),
+      PersonService.initPerson(now: now),
+      SystemService.initSystem(now: now),
+      CameraService.initCameras(now: now),
+      WeatherService.initWeather(now: now),
+      CombineService.initCombines(now: now)
     ];
     await Future.wait(toDo);
+    await CombineService.initAllCombines();
     isInited = true;
     isIniting = false;
     callAllListeners();

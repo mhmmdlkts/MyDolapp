@@ -3,6 +3,7 @@ import 'package:my_doll_app/models/combine.dart';
 import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
 import 'package:my_doll_app/models/weather.dart';
+import 'package:my_doll_app/services/combine_service.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
 import 'package:my_doll_app/services/weather_service.dart';
 import 'package:my_doll_app/widgets/item_on_avatar.dart';
@@ -41,6 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
             onRefreshClicked: () => setState(() {
               combine.random(wardrobe!);
             }),
+            onAcceptClicked: () {
+              CombineService.addNewCombine(combine);
+            },
             onItemClicked: (Item item) => setState(() {
               combine.random(wardrobe!, oldItem: item);
             }),

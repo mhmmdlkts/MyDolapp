@@ -19,7 +19,7 @@ class SystemService {
   static final Version _iPadIOSFirstVersion = Version.parse('16.1');
   static final Version _iPhoneIOSFirstVersion = Version.parse('16.0');
 
-  static Future init() async {
+  static Future initSystem({DateTime? now}) async {
     if (Platform.isIOS) {
       iosDeviceInfo = await _deviceInfo.iosInfo;
     }
@@ -27,6 +27,9 @@ class SystemService {
       androidDeviceInfo = await _deviceInfo.androidInfo;
     }
     isSupportingIsolateImage = _isSupportingIsolateImage();
+    if (now != null) {
+      print('initSystem: took: ${DateTime.now().difference(now).inMilliseconds}');
+    }
   }
 
   // TODO Test different devices

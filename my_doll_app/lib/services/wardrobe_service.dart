@@ -9,7 +9,7 @@ class WardrobeService {
   static List<Wardrobe> wardrobes = [];
 
 
-  static Future fetchWardrobes() async {
+  static Future initWardrobes({DateTime? now}) async {
     if (wardrobes.isNotEmpty) {
       return;
     }
@@ -26,10 +26,12 @@ class WardrobeService {
     }
     wardrobes.sort();
     await getDefaultWardrobe()?.loadItems();
+    if (now != null) {
+      print('initWardrobes: took: ${DateTime.now().difference(now).inMilliseconds}');
+    }
   }
 
   static Future<List<Item>> loadWardrobe(String wardrobeId) async {
-
     CollectionReference col = FirestorePathsService.getItemsCollection(wardrobeId)!;
 
     QuerySnapshot querySnapshot = await col.get();
@@ -103,6 +105,30 @@ class WardrobeService {
       tasks.add(ref.update({'is_default': element.isDefault}));
     }
     await Future.wait(tasks);
+  }
+
+  static Future<Item?> getItemById(String itemId) async {
+    for (Wardrobe wardrobe in wardrobes) {
+      if (wardrobe.isLoaded()) {
+        Item? i = wardrobe.getItemById(itemId);
+        if (i != null) {
+          return i;
+        }
+      }
+    }
+
+    List<Future> loadAll = [];
+    for (Wardrobe wardrobe in wardrobes) {
+      if (!wardrobe.isLoaded()) {
+        loadAll.add(wardrobe.loadItems());
+      }
+    }
+
+    if (loadAll.isNotEmpty) {
+      await Future.wait(loadAll);
+      return getItemById(itemId);
+    }
+    return null;
   }
 
 }

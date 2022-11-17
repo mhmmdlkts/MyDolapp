@@ -45,6 +45,13 @@ class Wardrobe implements Comparable {
 
   Item? getItem(int index, {ItemType? type}) => _items?.where((element) => type==null || element.type == type)?.elementAt(index);
 
+  List<Item> getItems() {
+    if (isLoaded()) {
+      return _items!;
+    }
+    return [];
+  }
+
   List<Item> getAllTypes(ItemType type) {
     if (!isLoaded()) {
       return [];
@@ -68,6 +75,17 @@ class Wardrobe implements Comparable {
 
   void addItem(Item item) {
     _items?.add(item);
+  }
+
+  Item? getItemById(String id) {
+    if (!isLoaded()) {
+      return null;
+    }
+    List<Item> whereId = _items!.where((element) => element.id == id).toList();
+    if (whereId.isEmpty) {
+      return null;
+    }
+    return whereId.first;
   }
 
 }

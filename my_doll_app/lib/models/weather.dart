@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_doll_app/main.dart';
 import 'package:weather/weather.dart' as w;
 
 class Weather5Day {
@@ -47,6 +48,7 @@ class Weather {
   }
 
   String getReadableType() {
+    return weather.weatherDescription?.toCapitalized()??'';
     switch (type) {
       case WeatherType.sunny: return 'Sunny';
       case WeatherType.cloudy: return 'Cloudy';

@@ -24,7 +24,7 @@ class WeatherService {
     return lastReturnedWeather;
   }
 
-  static Future initWeather () async {
+  static Future initWeather ({DateTime? now}) async {
     if (_weather5day != null || _isIniting) {
       return;
     }
@@ -40,6 +40,9 @@ class WeatherService {
     // custom.Weather cw = custom.Weather.fromWeather(w.first, cityName);
     // Weather w2 = await wf.currentWeatherByCityName(cityName);
     _isIniting = false;
+    if (now != null) {
+      print('initWeather: took: ${DateTime.now().difference(now).inMilliseconds}');
+    }
     return cw5;
   }
 

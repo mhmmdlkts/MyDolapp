@@ -7,9 +7,7 @@ class PersonService {
   static bool _isInited = false;
   static late Person person;
 
-  static Future initPerson() async {
-
-
+  static Future initPerson({DateTime? now}) async {
     DocumentReference? ref = FirestorePathsService.getUserDoc();
     if (ref == null) {
       return;
@@ -20,6 +18,9 @@ class PersonService {
     person = Person.fromSnapshot(snapshot);
 
     _isInited = true;
+    if (now != null) {
+      print('initPerson: took: ${DateTime.now().difference(now).inMilliseconds}');
+    }
   }
 
   static bool isInited() => _isInited;

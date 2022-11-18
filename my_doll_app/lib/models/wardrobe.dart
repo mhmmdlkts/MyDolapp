@@ -81,7 +81,7 @@ class Wardrobe implements Comparable {
     if (!isLoaded()) {
       return null;
     }
-    List<Item> whereId = _items!.where((element) => element.id == id).toList();
+    List<Item> whereId = _items!.where((element) => element.id?.trim() == id.trim()).toList();
     if (whereId.isEmpty) {
       return null;
     }

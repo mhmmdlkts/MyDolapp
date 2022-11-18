@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'package:my_doll_app/enums/item_type_enum.dart';
+import 'package:my_doll_app/main.dart';
 import 'package:my_doll_app/models/combine.dart';
 import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/person.dart';
@@ -20,6 +21,8 @@ import 'package:pasteboard/pasteboard.dart';
 import 'package:clipboard/clipboard.dart';
 
 class ItemOnAvatarWidget extends StatefulWidget {
+  static const double originalItemWidth = 400;
+  static const double originalItemHeight = 500;
   final Combine? combine;
   final Uint8List? movableItem;
   final bool showMannequin;
@@ -38,8 +41,6 @@ class ItemOnAvatarWidget extends StatefulWidget {
 class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
 
   final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
-  final double _width = 400;
-  final double _height = 500;
   int position = 0;
   int floor = 0;
   double val = 0;
@@ -55,8 +56,8 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: _width,
-      height: _height,
+      width: ItemOnAvatarWidget.originalItemWidth,
+      height: ItemOnAvatarWidget.originalItemHeight,
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(width: 0, color: Colors.transparent),
@@ -74,9 +75,9 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
               alignment: Alignment.center,
               children: [
                 SizedBox(
-                  width: _width,
-                  height: _height,
-                  child: widget.showMannequin?AvatarWidget(_width, _height, gender: PersonService.person.gender??Gender.female):Container(),
+                  width: ItemOnAvatarWidget.originalItemWidth,
+                  height: ItemOnAvatarWidget.originalItemHeight,
+                  child: widget.showMannequin?AvatarWidget(ItemOnAvatarWidget.originalItemWidth, ItemOnAvatarWidget.originalItemHeight, gender: PersonService.person.gender??Gender.female):Container(),
                 ),
                 widget.combine!=null?Stack(
                     children: widget.combine!.items[floor]?.map((e) => SizedBox(
@@ -84,8 +85,8 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
                     )).toList()??[]
                 ):Container(),
                 widget.movableItem!=null?SizedBox(
-                  width: _width,
-                  height: _height,
+                  width: ItemOnAvatarWidget.originalItemWidth,
+                  height: ItemOnAvatarWidget.originalItemHeight,
                   child: _movableObjectWidget(),
                 ):Container(),
                 Positioned(
@@ -161,10 +162,10 @@ class _ItemOnAvatarWidgetState extends State<ItemOnAvatarWidget> {
   }
 
   Widget _showItems(Item item) => SizedBox(
-    width: _width,
-    height: _height,
+    width: ItemOnAvatarWidget.originalItemWidth,
+    height: ItemOnAvatarWidget.originalItemHeight,
     child: Transform(
-      transform: item.matrix,
+      transform: item.matrix,//.resize(ItemOnAvatarWidget.originalItemHeight/width, ItemOnAvatarWidget.originalItemHeight/height),
       child: InkWell(
         onTap: widget.onItemClicked==null?null: () => widget.onItemClicked!.call(item),
         child: item.images?.thumb_600!=null?Image.memory(item.images!.thumb_600!):Container()

@@ -76,6 +76,16 @@ extension StringCasingExtension on String {
   String toTitleCase() => replaceAll(RegExp(' +'), ' ').split(' ').map((str) => str.toCapitalized()).join(' ');
 }
 
+extension Resize on Matrix4 {
+  Matrix4 resize({dx = 1, dy = 1}) {
+    final v0 = getColumn(0);
+    final v1 = getColumn(1);
+    final v2 = getColumn(2);
+    final v3 = getColumn(3);
+    return Matrix4(v0[0]/1, v0[1]/1, v0[2], v0[3], v1[0]/1, v1[1]/1, v1[2], v1[3], v2[0]/1, v2[1]/1, v2[2], v2[3], v3[0]/dx, v3[1]/dy, v3[2], v3[3]);
+  }
+}
+
 extension HexColor on Color {
 
   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).

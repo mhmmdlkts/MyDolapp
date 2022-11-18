@@ -39,6 +39,7 @@ dependencies:
   flutter_shake_animated: ^0.0.5
   camera: ^0.10.0+4
   image_picker: ^0.8.6
+  widget_mask: ^1.0.0+0
   # location: ^4.4.0
 
 

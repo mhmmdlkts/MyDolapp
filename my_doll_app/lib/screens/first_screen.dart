@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_doll_app/screens/combine_screen.dart';
 import 'package:my_doll_app/screens/get_additional_info_screen.dart';
 import 'package:my_doll_app/screens/home_screen.dart';
+import 'package:my_doll_app/screens/profile_screen.dart';
 import 'package:my_doll_app/screens/splash_screen.dart';
 import 'package:my_doll_app/screens/wardrobe_screen.dart';
-import 'package:my_doll_app/services/auth_service.dart';
 import 'package:my_doll_app/services/init_service.dart';
 import 'package:my_doll_app/services/person_service.dart';
 
@@ -16,14 +17,12 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-
-  late int _selectedIndex;
+  int _selectedIndex = 1;
   bool showSplashScreen = true;
 
   @override
   void initState() {
     super.initState();
-    _selectedIndex = 2;
     InitService.init(onInited: { context.hashCode: () => {
       if (PersonService.isInited() && !PersonService.person.isDataComplete()) {
         setState((){ showSplashScreen = false; })
@@ -91,13 +90,10 @@ class _FirstScreenState extends State<FirstScreen> {
 
   Widget _getSelectedPage() {
     switch (_selectedIndex) {
+      case 1: return const CombineScreen();
       case 2: return const HomeScreen();
       case 3: return const WardrobeScreen();
-      case 4: return Center(
-        child: ElevatedButton(onPressed: () {
-          FirebaseAuth.instance.signOut();
-        }, child: Icon(Icons.logout)),
-      );
+      case 4: return ProfileScreen();
     }
     return const Center(child: Text('...'));
   }

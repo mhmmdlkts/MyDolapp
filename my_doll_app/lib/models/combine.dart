@@ -34,7 +34,7 @@ class Combine {
       _itemsId = List<String>.from(o['items']);
     }
     if (o.containsKey('wearDates')) {
-      wearDates = o['wearDates'].map((e) => e.toDate()).toList();
+      wearDates = List<DateTime>.from(o['wearDates'].map((e) => e.toDate()).toList());
     }
   }
 

@@ -19,11 +19,13 @@ exports.onNewUserCreate = functions.region(region).auth.user().onCreate(async (u
     await createNewWardrobe(user.uid, 'My Wardrobe')
 });
 
-exports.updateColorName = functions.region(region).firestore.document('users/{userId}/wardrobes/{wardrobeId}/items/{itemId}').onWrite((change, context) => {
-    const colorHexBefore = change.before.data()[['colorHex']];
-    const colorHex = change.after.data()[['colorHex']];
-    const colorNameBefore = change.before.data()[['colorName']];
-    const colorName = change.after.data()[['colorName']];
+exports.updateColorName = functions.region(region).firestore.document('items/{itemId}').onWrite((change, context) => {
+    const colorNameKey = 'color_name'
+    const colorHexKey = 'color_hex'
+    const colorHexBefore = change.before.data()[[colorHexKey]];
+    const colorHex = change.after.data()[[colorHexKey]];
+    const colorNameBefore = change.before.data()[[colorNameKey]];
+    const colorName = change.after.data()[[colorNameKey]];
     if (colorName == colorNameBefore && colorHex == colorHexBefore) {
         return;
     }
@@ -32,9 +34,9 @@ exports.updateColorName = functions.region(region).firestore.document('users/{us
         name = ntc.name(colorHex)[1];
     }
     if (name == undefined || name.includes('Invalid Color')) {
-        change.after.ref.update({'colorName': admin.firestore.FieldValue.delete()});
+        change.after.ref.update({[colorNameKey]: admin.firestore.FieldValue.delete()});
     } else {
-        change.after.ref.update({'colorName': name});
+        change.after.ref.update({[colorNameKey]: name});
     }
 });
 

@@ -32,19 +32,11 @@ class FirestorePathsService {
     return FirebaseFirestore.instance.collection(_usersKey).doc(uid).collection(_wardrobesKey).doc(id);
   }
 
-  static CollectionReference? getItemsCollection(String id) {
-    String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      return null;
-    }
-    return FirebaseFirestore.instance.collection(_usersKey).doc(uid).collection(_wardrobesKey).doc(id).collection(_itemsKey);
+  static CollectionReference? getItemsCollection() {
+    return FirebaseFirestore.instance.collection(_itemsKey);
   }
 
   static CollectionReference? getCombinesCollection() {
-    String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      return null;
-    }
-    return FirebaseFirestore.instance.collection(_usersKey).doc(uid).collection(_combinesKey);
+    return FirebaseFirestore.instance.collection(_combinesKey);
   }
 }

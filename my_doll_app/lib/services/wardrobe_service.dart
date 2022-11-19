@@ -32,9 +32,12 @@ class WardrobeService {
   }
 
   static Future<List<Item>> loadWardrobe(String wardrobeId) async {
-    CollectionReference col = FirestorePathsService.getItemsCollection(wardrobeId)!;
+    CollectionReference? col = FirestorePathsService.getItemsCollection();
+    if (col == null) {
+      return [];
+    }
 
-    QuerySnapshot querySnapshot = await col.get();
+    QuerySnapshot querySnapshot = await col.where('wardrobe_id', isEqualTo: wardrobeId).get();
     List<Item> items = [];
     List<Future> urlTasks = [];
     for (var element in querySnapshot.docs) {
@@ -58,9 +61,10 @@ class WardrobeService {
   }
 
   static Future<String> addItem(Wardrobe wardrobe, Item item) async {
-    CollectionReference col = FirestorePathsService.getItemsCollection(wardrobe.id)!;
+    CollectionReference col = FirestorePathsService.getItemsCollection()!;
     String id = col.doc().id;
     item.id = id;
+    item.wardrobeId = wardrobe.id;
     if (item.base64 != null) {
       await StorageService.uploadImage(item.base64!, id);
     }
@@ -69,10 +73,10 @@ class WardrobeService {
     return id;
   }
 
-  static Future<String?> updateWardrobe(Wardrobe wardrobe) async {
+  static Future updateWardrobe(Wardrobe wardrobe) async {
     DocumentReference? ref = FirestorePathsService.getWardrobeDoc(wardrobe.id);
     if (ref == null) {
-      return null;
+      return;
     }
     await ref!.update(wardrobe.toData());
   }
@@ -130,5 +134,4 @@ class WardrobeService {
     }
     return null;
   }
-
 }

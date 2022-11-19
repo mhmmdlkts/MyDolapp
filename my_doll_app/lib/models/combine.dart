@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_doll_app/enums/item_type_enum.dart';
 import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
@@ -8,12 +9,14 @@ import 'package:my_doll_app/services/wardrobe_service.dart';
 
 class Combine {
   String? id;
+  late String userId;
   late Timestamp createTime;
   late Map<int, List<Item>> items; // TODO Remove me
   late List<String> _itemsId;
   List<DateTime>? wearDates;
 
   Combine() {
+    userId = FirebaseAuth.instance.currentUser?.uid??'';
     createTime = Timestamp.now();
     clear();
   }
@@ -27,6 +30,9 @@ class Combine {
 
     id = snap.id;
 
+    if (o.containsKey('user_id')) {
+      userId = o['user_id'];
+    }
     if (o.containsKey('create_time')) {
       createTime = o['create_time'];
     }
@@ -103,6 +109,7 @@ class Combine {
   }
 
   Object? toData() => {
+    'user_id': userId,
     'create_time': createTime,
     'items': items[0]?.map((e) => e.id).toList()??[],
     'wearDates': wearDates?.map((e) => Timestamp.fromDate(e)).toList()??[]

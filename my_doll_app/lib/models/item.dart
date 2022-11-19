@@ -9,13 +9,15 @@ import 'package:vector_math/vector_math_64.dart';
 
 class Item implements Comparable {
   String? id;
+  String? wardrobeId;
+  String? userId;
   ItemType type = ItemType.other;
   late Timestamp createTime;
   late Matrix4 matrix;
   String? base64;
   ItemImages? images;
-  late Color color;
-  late String colorName;
+  Color? color;
+  String? colorName;
 
   Item.fromDoc(QueryDocumentSnapshot<Object?> snap) {
     if (snap.data() == null) {
@@ -26,6 +28,9 @@ class Item implements Comparable {
 
     id = snap.id;
 
+    if (o.containsKey('wardrobe_id')) {
+      wardrobeId = o['wardrobe_id'];
+    }
     if (o.containsKey('type')) {
       type = ItemTypeService.stringToEnum(o['type']);
     }
@@ -35,11 +40,11 @@ class Item implements Comparable {
     if (o.containsKey('matrix')) {
       matrix = decodeMatrix4(o['matrix']);
     }
-    if (o.containsKey('colorHex')) {
-      color = fromHex(o['colorHex']);
+    if (o.containsKey('color_hex')) {
+      color = fromHex(o['color_hex']);
     }
-    if (o.containsKey('colorName')) {
-      colorName = o['colorName'];
+    if (o.containsKey('color_name')) {
+      colorName = o['color_name'];
     }
   }
   
@@ -57,10 +62,12 @@ class Item implements Comparable {
   }
 
   Map<String, dynamic> toData() => {
+    'wardrobe_id': wardrobeId,
     'type': ItemTypeService.enumToString(type),
     'create_time': createTime,
     'matrix': encodeMatrix4(matrix),
-    'colorHex': color.toHex(withAlpha: false)
+    'color_hex': color?.toHex(withAlpha: false),
+    'color_name': colorName
   };
 
   static Matrix4 decodeMatrix4(String? matrix) {
@@ -111,9 +118,9 @@ class ItemImages {
   
   Future _init() async {
     thumb_50 = await StorageService.getItemRef(itemId, 'img_50x50').getData();
-    thumb_100 = await StorageService.getItemRef(itemId, 'img_100x100').getData();
-    thumb_200 = await StorageService.getItemRef(itemId, 'img_200x200').getData();
-    thumb_400 = await StorageService.getItemRef(itemId, 'img_400x400').getData();
+    // thumb_100 = await StorageService.getItemRef(itemId, 'img_100x100').getData();
+    // thumb_200 = await StorageService.getItemRef(itemId, 'img_200x200').getData();
+    // thumb_400 = await StorageService.getItemRef(itemId, 'img_400x400').getData();
     thumb_600 = await StorageService.getItemRef(itemId, 'img_600x600').getData();
   }
   

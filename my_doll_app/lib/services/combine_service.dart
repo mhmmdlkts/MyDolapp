@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_doll_app/services/firestore_paths_service.dart';
 
 import '../models/combine.dart';
@@ -7,13 +8,13 @@ class CombineService {
   static List<Combine> combines = [];
 
   static Future initCombines({DateTime? now}) async {
-
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     CollectionReference? col = FirestorePathsService.getCombinesCollection();
     if (col == null) {
       return;
     }
 
-    QuerySnapshot querySnapshot = await col.get();
+    QuerySnapshot querySnapshot = await col.where('user_id', isEqualTo: uid).get();
     for (var element in querySnapshot.docs) {
       combines.add(Combine.fromDoc(element));
     }

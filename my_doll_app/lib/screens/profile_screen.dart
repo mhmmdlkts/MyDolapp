@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_doll_app/services/cloudfunctions_service.dart';
 import 'package:my_doll_app/services/person_service.dart';
 
 class ProfileScreen extends StatefulWidget {

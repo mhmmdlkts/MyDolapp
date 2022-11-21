@@ -19,6 +19,64 @@ exports.onNewUserCreate = functions.region(region).auth.user().onCreate(async (u
     await createNewWardrobe(user.uid, 'My Wardrobe')
 });
 
+exports.updateFollowingUser = functions.region(region).firestore.document('users/{userId}').onWrite((change, context) => {
+    const followingKey = 'following'
+    const followerKey = 'follower'
+    const followingBefore = new Set(change.before.data()[[followingKey]]);
+    const followingAfter = new Set(change.after.data()[[followingKey]]);
+    const all = new Set([...followingBefore, ...followingAfter]);
+    const newFollow = new Set();
+    const unfollow = new Set();
+
+    Array.from(all).every(element => {
+        const hasBefore = followingBefore.has(element);
+        const hasAfter = followingAfter.has(element);
+        if (!hasBefore && hasAfter) { // New following
+            newFollow.add(element);
+        } else if (hasBefore && !hasAfter) { // Unfollowing
+            unfollow.add(element);
+        }
+    });
+
+    if (newFollow.size == 0 && unfollow.size == 0) {
+        return;
+    }
+
+    Array.from(newFollow).every(element => {
+        updateStringList(db.collection('users').doc(element), followerKey, context.params.userId, false)
+    })
+
+    Array.from(unfollow).every(element => {
+        updateStringList(db.collection('users').doc(element), followerKey, context.params.userId, true)
+    })
+})
+
+async function updateStringList(ref, key, value, willRemove) {
+    await db.runTransaction(async (t) => {
+        return t.get(ref).then(doc => {
+            if (!doc.data()[key]) {
+                if (willRemove) {
+                    t.update(ref, {
+                        [key]: []
+                    });
+                } else {
+                    t.update(ref, {
+                        [key]: [value]
+                    });
+                }
+            } else {
+                const followers = new Set(doc.data()[key]);
+                if (willRemove) {
+                    followers.delete(value);
+                } else {
+                    followers.add(value);
+                }
+                t.update(ref, { [key]: Array.from(followers) });
+            }
+        });
+    });
+}
+
 exports.updateColorName = functions.region(region).firestore.document('items/{itemId}').onWrite((change, context) => {
     const colorNameKey = 'color_name'
     const colorHexKey = 'color_hex'
@@ -38,6 +96,22 @@ exports.updateColorName = functions.region(region).firestore.document('items/{it
     } else {
         change.after.ref.update({[colorNameKey]: name});
     }
+});
+
+exports.followUser = functions.region(region).https.onRequest(async (req, res) => {
+    const uid = req.headers['uid'];
+    if (!await checkIsValidMethod(uid, req.headers['security_key'], req.headers['email'])) {
+        res.status(401).send({'message': 'Unauthorized'});
+        return;
+    }
+    const body = JSON.parse(req.body);
+    // Begin function
+
+    const followingUserId = body.followingUserId;
+    const willRemove = body.willRemove;
+    const userRef = db.collection('users').doc(uid)
+    await updateStringList(userRef, 'following', followingUserId, willRemove)
+    res.status(200).send({val: true})
 });
 
 exports.existUsername = functions.region(region).https.onRequest(async (req, res) => {
@@ -66,7 +140,6 @@ exports.updateUserValues = functions.region(region).https.onRequest(async (req, 
     const body = JSON.parse(req.body);
     // Begin function
 
-    console.log(body.person.birthdate)
     if (body.person.birthdate != undefined && body.person.birthdate != null) {
           body.person.birthdate = new admin.firestore.Timestamp(body.person.birthdate,0)
     }

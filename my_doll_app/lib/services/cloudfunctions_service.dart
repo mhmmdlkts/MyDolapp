@@ -6,23 +6,23 @@ import 'package:http/http.dart';
 import 'package:my_doll_app/secrets/secret_api_service.dart';
 
 class CloudfunctionsService{
-  static const isTest = false;
   static const String functionExistUsername = 'existUsername';
   static const String functionUpdateUserValues = 'updateUserValues';
+  static const String functionFollowUser = 'followUser';
 
   static const String _host = 'europe-west1-my-dolapp.cloudfunctions.net';
-  static const String _hostTest = '127.0.0.1';
+  static const String _testHost = '127.0.0.1';
   static const int _hostPort = 8081;
-  static const String _testUID = 'WKhR0pKklGXSKIfzf8zr5OVyx3k3';
 
-  static Future<Map> httpCall(String functionName, {Map? body}) async{
-    String uid = isTest?_testUID:FirebaseAuth.instance.currentUser?.uid??'';
+  static Future<Map> httpCall(String functionName, {Map? body, String? testUid}) async{
+    bool isTest = testUid != null;
+    String uid = isTest?testUid:FirebaseAuth.instance.currentUser?.uid??'';
     String email = FirebaseAuth.instance.currentUser?.email??'';
     Response response = await post(
       Uri(
         port: isTest?_hostPort:null,
         scheme: isTest?'http':'https',
-        host: isTest?_hostTest:_host,
+        host: isTest?_testHost:_host,
         path: isTest?'my-dolapp/europe-west1/$functionName':functionName,
       ),
       body: body==null?"{}":json.encode(body),

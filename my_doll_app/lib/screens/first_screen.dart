@@ -17,7 +17,7 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-  int _selectedIndex = 4;
+  int _selectedIndex = 1;
   bool showSplashScreen = true;
 
   @override
@@ -90,6 +90,7 @@ class _FirstScreenState extends State<FirstScreen> {
 
   Widget _getSelectedPage() {
     switch (_selectedIndex) {
+      case 0: return const Center(child: Text('...'));
       case 1: return const CombineScreen();
       case 2: return const HomeScreen();
       case 3: return const WardrobeScreen();

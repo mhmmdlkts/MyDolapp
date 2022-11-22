@@ -39,8 +39,8 @@ class Combine {
     if (o.containsKey('items')) {
       _itemsId = List<String>.from(o['items']);
     }
-    if (o.containsKey('wearDates')) {
-      wearDates = List<DateTime>.from(o['wearDates'].map((e) => e.toDate()).toList());
+    if (o.containsKey('wear_dates')) {
+      wearDates = List<DateTime>.from(o['wear_dates'].map((e) => e.toDate()).toList());
     }
   }
 
@@ -112,6 +112,6 @@ class Combine {
     'user_id': userId,
     'create_time': createTime,
     'items': items[0]?.map((e) => e.id).toList()??[],
-    'wearDates': wearDates?.map((e) => Timestamp.fromDate(e)).toList()??[]
+    'wear_dates': wearDates?.map((e) => Timestamp.fromDate(e)).toList()??[]
   };
 }

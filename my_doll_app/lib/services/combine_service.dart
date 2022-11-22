@@ -6,6 +6,7 @@ import '../models/combine.dart';
 
 class CombineService {
   static List<Combine> combines = [];
+  static Map<DateTime, Combine> combinesByDate = {};
 
   static Future initCombines({DateTime? now}) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -19,9 +20,19 @@ class CombineService {
       combines.add(Combine.fromDoc(element));
     }
 
+    initCombinesByDate();
     if (now != null) {
       print('initCombines: took: ${DateTime.now().difference(now).inMilliseconds}');
     }
+  }
+
+  static initCombinesByDate() {
+    for (Combine combine in combines) {
+      combine.wearDates?.forEach((date) {
+        combinesByDate.addAll({date: combine});
+      });
+    }
+    combinesByDate = Map.fromEntries(combinesByDate.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key)));
   }
 
   static Future initAllCombines() async {

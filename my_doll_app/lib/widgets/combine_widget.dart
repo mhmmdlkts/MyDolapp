@@ -23,9 +23,9 @@ import 'package:widget_mask/widget_mask.dart';
 
 class CombineWidget extends StatefulWidget {
   final double width;
-  final Combine combine;
+  final Combine? combine;
 
-  const CombineWidget({required this.combine, this.width = 200, super.key});
+  const CombineWidget({this.combine, this.width = 200, super.key});
 
   @override
   _CombineWidgetState createState() => _CombineWidgetState();
@@ -50,7 +50,7 @@ class _CombineWidgetState extends State<CombineWidget> {
       child: SizedBox(
         width: _width,
         height: _height,
-        child: _showCombine(widget.combine)
+        child: widget.combine==null?Container():_showCombine(widget.combine!)
       ),
     );
   }

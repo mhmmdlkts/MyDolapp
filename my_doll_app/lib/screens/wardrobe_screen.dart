@@ -12,6 +12,8 @@ import 'package:my_doll_app/services/wardrobe_service.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 
+import '../decorations.dart';
+
 class WardrobeScreen extends StatefulWidget {
   const WardrobeScreen({super.key});
 
@@ -27,9 +29,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   final List<ItemType> openTypes = [ItemType.tShirt, ItemType.pants];
   Wardrobe? wardrobe;
   bool _loadingWardrobe = false;
-
-  Offset shadowOffset = Offset(4, 4);
-  Color backgroundColor = Colors.black.withOpacity(0.05);
 
   @override
   void initState() {

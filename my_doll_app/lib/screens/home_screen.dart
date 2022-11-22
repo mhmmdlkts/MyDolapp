@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_doll_app/decorations.dart';
 import 'package:my_doll_app/models/combine.dart';
 import 'package:my_doll_app/models/item.dart';
 import 'package:my_doll_app/models/wardrobe.dart';
@@ -31,25 +32,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WeatherBgWidget(
-      child: wardrobe==null?const Center(child: CircularProgressIndicator(color: Colors.white,)):Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(height: 250),
-          ItemOnAvatarWidget(
-            showShadow: true,
-            combine: combine,
-            onRefreshClicked: () => setState(() {
-              combine.random(wardrobe!);
-            }),
-            onAcceptClicked: () {
-              CombineService.addNewCombine(combine);
-            },
-            onItemClicked: (Item item) => setState(() {
-              combine.random(wardrobe!, oldItem: item);
-            }),
-          ),
-        ],
+    return Container(
+      color: backgroundColor,
+      child: WeatherBgWidget(
+        child: wardrobe==null?const Center(child: CircularProgressIndicator(color: Colors.white,)):Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(height: 250),
+            ItemOnAvatarWidget(
+              showShadow: true,
+              combine: combine,
+              onRefreshClicked: () => setState(() {
+                combine.random(wardrobe!);
+              }),
+              onAcceptClicked: () {
+                CombineService.addNewCombine(combine);
+              },
+              onItemClicked: (Item item) => setState(() {
+                combine.random(wardrobe!, oldItem: item);
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

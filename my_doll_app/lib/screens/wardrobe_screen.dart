@@ -125,11 +125,10 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                       onTap: () {
                         openItem(item);
                       },
-                      child: _itemWidget(item),
                       onLongPress: () {
                         _showItemDialog(item);
-                        print('long');
                       },
+                      child: _itemWidget(item),
                     ),
                   ),
                 );

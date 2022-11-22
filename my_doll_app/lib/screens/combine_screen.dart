@@ -13,7 +13,38 @@ class CombineScreen extends StatefulWidget {
 }
 
 class _CombineScreenState extends State<CombineScreen> with WidgetsBindingObserver {
-  
+
+  ScrollController controller = ScrollController();
+  DateTime now = DateTime.now();
+  List<DateTime> loadedDates = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadedDates.add(now);
+    loadedDates.add(addMonth(now, -1));
+    controller.addListener(_scrollListener);
+  }
+
+  DateTime addMonth(DateTime dateTime, int i) {
+    int year = dateTime.year;
+    int month = dateTime.month + i;
+    if (month <= 0) {
+      year -= ((month.abs()+1)/12).ceil();
+      month = 12 - (month.abs()%12);
+    } else if (month > 12) {
+      year += (month.abs()/12).floor();
+      month = month.abs()%12;
+    }
+    return DateTime(year, month);
+  }
+
+  @override
+  void dispose() {
+    controller.removeListener(_scrollListener);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,18 +52,24 @@ class _CombineScreenState extends State<CombineScreen> with WidgetsBindingObserv
       height: MediaQuery.of(context).size.height,
       color: backgroundColor,
       child: SafeArea(
-        child: _getDateTimeWidgetChildren(CombineService.combinesByDate, howMuchInRow: 3, padding: 15),
+        child: _getDateTimeWidgetChildren(CombineService.combinesByDate, howMuchInRow: 4, padding: 15),
       ),
     );
   }
 
+  void _scrollListener() {
+    if (controller.position.extentAfter < 500) {
+      setState(() {
+        loadedDates.add(addMonth(loadedDates.last, -1));
+      });
+    }
+  }
+
   Widget _getDateTimeWidgetChildren (Map map, {int howMuchInRow = 3, double padding = 10}) {
-    DateTime dateTime = DateTime.now();
     return ListView(
-      children: [
-        _getAllMonthChildren(map, month: dateTime.month-1, year: dateTime.year, howMuchInRow: howMuchInRow, padding: padding),
-        _getAllMonthChildren(map, month: dateTime.month, year: dateTime.year, howMuchInRow: howMuchInRow, padding: padding)
-      ],
+      controller: controller,
+      reverse: true,
+      children: loadedDates.map((e) => _getAllMonthChildren(map, month: e.month, year: e.year, howMuchInRow: howMuchInRow, padding: padding)).toList()
     );
   }
 
@@ -41,6 +78,7 @@ class _CombineScreenState extends State<CombineScreen> with WidgetsBindingObserv
     List<Widget> list = [];
     List<DateTime> monthList = [];
     DateTime date = DateTime(year, month, 1);
+    int c = 0;
     while (date.month == month) {
       monthList.add(date);
       date = date.add(Duration(days: 1));
@@ -51,23 +89,39 @@ class _CombineScreenState extends State<CombineScreen> with WidgetsBindingObserv
         subMap.addAll({key: value});
       }
     });
+    Map<int, bool> checkDays = {};
     for (DateTime date in monthList) {
+      if ((date.day+c)%howMuchInRow == 1) {
+        checkDays.clear();
+        for (int i = 0; i < howMuchInRow; i++) {
+          checkDays.addAll({date.day+i: false});
+        }
+      }
       List<Combine?> combines = [];
       subMap.forEach((key, value) {
-        if (key.month == date.month && key.day == date.day) {
+        if (key.year == date.year && key.month == date.month && key.day == date.day) {
           combines.add(value);
         }
+        checkDays.forEach((k, _) {
+          if (key.year == date.year && key.month == date.month && key.day == k) {
+            checkDays[k] = true;
+          }
+        });
       });
       if (combines.isEmpty) {
         combines.add(null);
       }
+      c += combines.length-1;
+      bool isRowCollapsed = true;
+      checkDays.forEach((key, value) {
+        if (value) {
+          isRowCollapsed = false;
+        }
+      });
       for (var combine in combines) {
-        list.add(_getDateTimeWidget(dateTime: date, combine: combine, width: width/howMuchInRow));
+        list.add(_getDateTimeWidget(dateTime: date, isCollapsed: isRowCollapsed, combine: combine, width: width/howMuchInRow));
       }
     }
-    /*map.forEach((key, value) {
-      list.add(_getDateTimeWidget(dateTime: key, combine: value, width: width/howMuchInRow));
-    });*/
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: padding - 0.5, vertical: 20),
       child: Column(
@@ -86,33 +140,40 @@ class _CombineScreenState extends State<CombineScreen> with WidgetsBindingObserv
     );
   }
 
-  Widget _getDateTimeWidget ({Combine? combine, required DateTime dateTime, required double width}) => Container(
-
-    decoration: BoxDecoration(
-      color: Colors.white,
+  Widget _getDateTimeWidget ({Combine? combine, bool isCollapsed = false, required DateTime dateTime, required double width}) => Material(
+    color: Colors.white,
+    child: InkWell(
       borderRadius: BorderRadius.all(Radius.circular(3)),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.15),
-          spreadRadius: 2,
-          blurRadius: 5,
-          offset: Offset(4, 4),
+      onTap: () {
+        print(dateTime);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(3)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.15),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(4, 4),
+            ),
+          ],
         ),
-      ],
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        CombineWidget(combine: combine, width: width),
-        Container(
-          padding: EdgeInsets.only(top: 10, bottom: 5),
-          child: Text(Jiffy(dateTime).format('MMM, dd')),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            isCollapsed?Container(width: width,):CombineWidget(combine: combine, width: width),
+            Container(
+              padding: EdgeInsets.only(top: 10, bottom: 5),
+              child: Text(Jiffy(dateTime).format('MMM, dd')),
+            ),
+            Container(
+              padding: EdgeInsets.only(bottom: 10),
+              child: Text(Jiffy(dateTime).format('EEEE'), style: dateTime.weekday>5?TextStyle(color: Colors.red):null),
+            ),
+          ],
         ),
-        Container(
-          padding: EdgeInsets.only(bottom: 10),
-          child: Text(Jiffy(dateTime).format('EEEE'), style: dateTime.weekday>5?TextStyle(color: Colors.red):null),
-        ),
-      ],
+      ),
     ),
   );
 }

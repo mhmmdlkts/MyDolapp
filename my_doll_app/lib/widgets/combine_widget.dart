@@ -35,7 +35,6 @@ class _CombineWidgetState extends State<CombineWidget> {
 
   late double _width;
   late double _height;
-  int floor = 0;
 
   @override
   void initState() {
@@ -56,7 +55,7 @@ class _CombineWidgetState extends State<CombineWidget> {
   }
 
   Widget _showCombine(Combine combine) => Stack(
-      children: widget.combine!.items[floor]?.map((e) => SizedBox(
+      children: widget.combine!.items?.map((e) => SizedBox(
         child: Container(
           child: _showItems(e, half: e.type == ItemType.jacket),
         ),

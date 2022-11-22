@@ -11,14 +11,13 @@ class Combine {
   String? id;
   late String userId;
   late Timestamp createTime;
-  late Map<int, List<Item>> items; // TODO Remove me
+  List<Item> items = []; // TODO Remove me
   late List<String> _itemsId;
   List<DateTime>? wearDates;
 
   Combine() {
     userId = FirebaseAuth.instance.currentUser?.uid??'';
     createTime = Timestamp.now();
-    clear();
   }
 
   Combine.fromDoc(QueryDocumentSnapshot<Object?> snap) {
@@ -45,24 +44,18 @@ class Combine {
   }
 
   initItems() async {
-    clear();
+    items.clear();
     List<Future> futures = [];
     for (String itemId in _itemsId) {
       futures.add(
           WardrobeService.getItemById(itemId).then((value) => {
             if (value != null) {
-              items[0]!.add(value)
+              items!.add(value)
             }
           })
       );
     }
     await Future.wait(futures);
-  }
-
-  void clear() {
-    items = {
-      0: []
-    };
   }
 
   void random(Wardrobe? wardrobe, {Item? oldItem}) {
@@ -71,47 +64,24 @@ class Combine {
     }
     List<ItemType> validCombineTypes;
     if (oldItem == null) {
-      clear();
-      validCombineTypes = [ItemType.sweater, ItemType.pants, ItemType.shoe];
+      items.clear();
+      validCombineTypes = [ItemType.sweater, ItemType.pants, ItemType.shoe, ItemType.jacket];
     } else {
-      items[0]?.removeWhere((element) => element.type == oldItem.type);
+      items?.removeWhere((element) => element.type == oldItem.type);
       validCombineTypes = [oldItem!.type];
     }
     for (ItemType type in validCombineTypes) {
       List<Item> subItems = wardrobe.getAllTypes(type).where((element) => oldItem==null || element.id != oldItem!.id).toList();
       if (subItems.isNotEmpty) {
-        items[0]?.add(subItems[Random().nextInt(subItems.length)]);
+        items?.add(subItems[Random().nextInt(subItems.length)]);
       }
     }
-    addTestFloor(wardrobe, oldItem);
-  }
-
-  addTestFloor(Wardrobe wardrobe, Item? oldItem) {
-    int floor = 1;
-    items[floor] = [];
-    for (ItemType type in [ItemType.jacket]) {
-      List<Item> subItems = wardrobe.getAllTypes(type).where((element) => oldItem==null || element.id != oldItem!.id).toList();
-      if (subItems.isNotEmpty) {
-        items[floor]?.add(subItems[Random().nextInt(subItems.length)]);
-      }
-    }
-  }
-
-  bool existStack() {
-    bool check = false;
-    items.forEach((key, value) {
-      if (key != 0) {
-        check = true;
-        return;
-      }
-    });
-    return check;
   }
 
   Object? toData() => {
     'user_id': userId,
     'create_time': createTime,
-    'items': items[0]?.map((e) => e.id).toList()??[],
+    'items': items?.map((e) => e.id).toList()??[],
     'wear_dates': wearDates?.map((e) => Timestamp.fromDate(e)).toList()??[]
   };
 }

@@ -62,14 +62,18 @@ class _CombineScreenState extends State<CombineScreen> with WidgetsBindingObserv
       setState(() {
         loadedDates.add(addMonth(loadedDates.last, -1));
       });
+    } else if (controller.position.extentAfter - controller.position.maxScrollExtent == 0) {
+      setState(() {
+        loadedDates.insert(0, addMonth(loadedDates.first, 1));
+      });
     }
   }
 
   Widget _getDateTimeWidgetChildren (Map map, {int howMuchInRow = 3, double padding = 10}) {
     return ListView(
-      controller: controller,
-      reverse: true,
-      children: loadedDates.map((e) => _getAllMonthChildren(map, month: e.month, year: e.year, howMuchInRow: howMuchInRow, padding: padding)).toList()
+        controller: controller,
+        reverse: true,
+        children: loadedDates.map((e) => _getAllMonthChildren(map, month: e.month, year: e.year, howMuchInRow: howMuchInRow, padding: padding)).toList()
     );
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:my_doll_app/decorations.dart';
 import 'package:my_doll_app/models/combine.dart';
+import 'package:my_doll_app/screens/single_day_screen.dart';
 import 'package:my_doll_app/services/combine_service.dart';
 import 'package:my_doll_app/widgets/combine_widget.dart';
 
@@ -148,8 +149,15 @@ class _CombineScreenState extends State<CombineScreen> with WidgetsBindingObserv
     color: Colors.white,
     child: InkWell(
       borderRadius: BorderRadius.all(Radius.circular(3)),
-      onTap: () {
-        print(dateTime);
+      onTap: () async {
+        final res = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SingleDayScreen(dateTime)),
+        );
+        if (res == null) {
+          return;
+        }
+        setState(() {});
       },
       child: Container(
         decoration: BoxDecoration(

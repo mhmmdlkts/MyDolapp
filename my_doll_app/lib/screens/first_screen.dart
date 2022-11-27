@@ -4,6 +4,7 @@ import 'package:my_doll_app/screens/combine_screen.dart';
 import 'package:my_doll_app/screens/get_additional_info_screen.dart';
 import 'package:my_doll_app/screens/home_screen.dart';
 import 'package:my_doll_app/screens/profile_screen.dart';
+import 'package:my_doll_app/screens/social_screen.dart';
 import 'package:my_doll_app/screens/splash_screen.dart';
 import 'package:my_doll_app/screens/wardrobe_screen.dart';
 import 'package:my_doll_app/services/init_service.dart';
@@ -17,7 +18,7 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
   bool showSplashScreen = true;
 
   @override
@@ -90,7 +91,7 @@ class _FirstScreenState extends State<FirstScreen> {
 
   Widget _getSelectedPage() {
     switch (_selectedIndex) {
-      case 0: return const Center(child: Text('...'));
+      case 0: return const SocialScreen();
       case 1: return const CombineScreen();
       case 2: return const HomeScreen();
       case 3: return const WardrobeScreen();

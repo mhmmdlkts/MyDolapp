@@ -22,10 +22,15 @@ import 'package:clipboard/clipboard.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class CombineWidget extends StatefulWidget {
-  final double width;
+  final double? width;
+  final double? height;
   final Combine? combine;
 
-  const CombineWidget({this.combine, this.width = 200, super.key});
+  CombineWidget({this.combine, this.width, this.height, super.key}) : assert((height == null && width != null) || (height != null && width == null) ) {
+    if (width == null && height == null) {
+      width == 200;
+    }
+  }
 
   @override
   _CombineWidgetState createState() => _CombineWidgetState();
@@ -39,8 +44,13 @@ class _CombineWidgetState extends State<CombineWidget> {
   @override
   void initState() {
     super.initState();
-    _width = widget.width;
-    _height = ItemOnAvatarWidget.originalItemHeight*(widget.width/ItemOnAvatarWidget.originalItemWidth);
+    if (widget.width != null) {
+      _width = widget.width!;
+      _height = ItemOnAvatarWidget.originalItemHeight*(_width/ItemOnAvatarWidget.originalItemWidth);
+    } else if (widget.height != null) {
+      _height = widget.height!;
+      _width = ItemOnAvatarWidget.originalItemWidth*(_height/ItemOnAvatarWidget.originalItemHeight);
+    }
   }
 
   @override

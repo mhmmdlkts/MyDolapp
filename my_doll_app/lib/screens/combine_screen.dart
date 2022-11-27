@@ -152,7 +152,7 @@ class _CombineScreenState extends State<CombineScreen> with WidgetsBindingObserv
       onTap: () async {
         final res = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SingleDayScreen(dateTime)),
+          MaterialPageRoute(builder: (context) => SingleDayScreen(dateTime, combine: combine,)),
         );
         if (res == null) {
           return;

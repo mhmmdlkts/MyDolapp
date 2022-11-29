@@ -1,20 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:jiffy/jiffy.dart';
-import 'package:my_doll_app/main.dart';
 import 'package:my_doll_app/models/combine.dart';
-import 'package:my_doll_app/services/cloudfunctions_service.dart';
-import 'package:my_doll_app/services/combine_service.dart';
-import 'package:my_doll_app/services/permission_service.dart';
-import 'package:my_doll_app/services/person_service.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:ruler_picker_bn/ruler_picker_bn.dart';
-import 'package:my_doll_app/models/person.dart';
+import 'create_outfit_screen.dart';
 
 import '../widgets/combine_widget.dart';
-import '../widgets/stepper.dart';
 
 class SingleDayScreen extends StatefulWidget {
   final DateTime date;
@@ -118,7 +106,6 @@ class _SingleDayScreenState extends State<SingleDayScreen> {
 
   Widget _content() => Container(
     decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(20)),
         boxShadow: [
           BoxShadow(
@@ -129,7 +116,23 @@ class _SingleDayScreenState extends State<SingleDayScreen> {
           )
         ]
     ),
-    padding: EdgeInsets.all(20),
-    child: CombineWidget(combine: widget.combine, width: MediaQuery.of(context).size.width - 80),
+    child: Material(
+      borderRadius: BorderRadius.all(Radius.circular(20)),
+      color: Colors.white,
+      child: InkWell(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateOutfitScreen(combine: widget.combine)),
+          );
+          setState(() {});
+        },
+        child: Container(
+          padding: EdgeInsets.all(20),
+          child: CombineWidget(combine: widget.combine, width: MediaQuery.of(context).size.width - 80),
+        ),
+      ),
+    ),
   );
 }

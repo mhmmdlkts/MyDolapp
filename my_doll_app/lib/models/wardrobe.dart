@@ -88,4 +88,6 @@ class Wardrobe implements Comparable {
     return whereId.first;
   }
 
+  bool existItemType(ItemType itemType) => getAllTypes(itemType).isNotEmpty;
+
 }

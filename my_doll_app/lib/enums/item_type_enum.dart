@@ -12,6 +12,27 @@ class ItemTypeService {
 
   static String enumToString(ItemType type) => type.toString().split('.').last;
 
+  static int enumToZIndex(ItemType type) {
+    switch (type) {
+      case ItemType.coat:
+        return 7;
+      case ItemType.jacket:
+        return 6;
+      case ItemType.shoe:
+        return 5;
+      case ItemType.tShirt:
+        return 4;
+      case ItemType.sweater:
+        return 3;
+      case ItemType.pants:
+        return 2;
+      case ItemType.shorts:
+        return 1;
+      case ItemType.other:
+        return 0;
+    }
+  }
+
   static String enumToReadableString(ItemType type) {
     switch (type) {
       case ItemType.tShirt:

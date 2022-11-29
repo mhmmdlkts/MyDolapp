@@ -1,24 +1,9 @@
-
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'package:my_doll_app/enums/item_type_enum.dart';
 import 'package:my_doll_app/main.dart';
 import 'package:my_doll_app/models/combine.dart';
 import 'package:my_doll_app/models/item.dart';
-import 'package:my_doll_app/models/person.dart';
-import 'package:my_doll_app/models/wardrobe.dart';
-import 'package:my_doll_app/services/combine_service.dart';
-import 'package:my_doll_app/services/storage_service.dart';
-import 'package:my_doll_app/services/wardrobe_service.dart';
 import 'package:my_doll_app/widgets/item_on_avatar.dart';
-import 'package:pasteboard/pasteboard.dart';
-import 'package:clipboard/clipboard.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class CombineWidget extends StatefulWidget {
@@ -44,6 +29,9 @@ class _CombineWidgetState extends State<CombineWidget> {
   @override
   void initState() {
     super.initState();
+  }
+
+  resize() {
     if (widget.width != null) {
       _width = widget.width!;
       _height = ItemOnAvatarWidget.originalItemHeight*(_width/ItemOnAvatarWidget.originalItemWidth);
@@ -55,6 +43,7 @@ class _CombineWidgetState extends State<CombineWidget> {
 
   @override
   Widget build(BuildContext context) {
+    resize();
     return Container(
       child: SizedBox(
         width: _width,

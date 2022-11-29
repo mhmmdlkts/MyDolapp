@@ -9,6 +9,7 @@ import 'package:my_doll_app/screens/add_item_screen.dart';
 import 'package:my_doll_app/screens/add_wardrobe_screen.dart';
 import 'package:my_doll_app/screens/single_item_screen.dart';
 import 'package:my_doll_app/services/wardrobe_service.dart';
+import 'package:my_doll_app/widgets/item_widget.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 
@@ -117,20 +118,14 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
               itemCount: wardrobe!.itemCount(type: type),
               itemBuilder: (context, index) {
                 Item item = (wardrobe!.getItem(index, type: type))!;
-                return Container(
-                  margin: const EdgeInsets.all(10),
-                  child: Material(
-                    color: Colors.white,
-                    child: InkWell(
-                      onTap: () {
-                        openItem(item);
-                      },
-                      onLongPress: () {
-                        _showItemDialog(item);
-                      },
-                      child: _itemWidget(item),
-                    ),
-                  ),
+                return ItemWidget(
+                  item: item,
+                  onPressed: () {
+                    openItem(item);
+                  },
+                  onLongPressed: () {
+                    _showItemDialog(item);
+                  },
                 );
               },
             ),
@@ -274,49 +269,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
       setState(() {});
     }
   }
-
-  Widget _itemWidget(Item item) => Container(
-    width: 150,
-    height: 220,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.all(Radius.circular(3)),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.15),
-          spreadRadius: 2,
-          blurRadius: 5,
-          offset: shadowOffset,
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
-        SizedBox(
-          height: 140,
-          width: 140,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                height: 80,
-                width: 115,
-                decoration: BoxDecoration(
-                  color: (item.color??Colors.black).withOpacity(0.3),
-                  borderRadius: BorderRadius.all(Radius.circular(3)),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(20),
-                child: _widgetWithShadow(item.images!.thumb_600!),
-              ),
-            ],
-          ),
-        ),
-        Text(ItemTypeService.enumToReadableString(item.type), style: TextStyle(fontWeight: FontWeight.bold),),
-        // Container(color: item.color, height: 18 )
-      ],
-    ),
-  );
 
   void _showItemDialog(Item item) async {
     ValueNotifier<Uint8List?> notifier = ValueNotifier(null);

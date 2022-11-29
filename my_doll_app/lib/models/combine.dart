@@ -56,6 +56,7 @@ class Combine {
       );
     }
     await Future.wait(futures);
+    items.sort();
   }
 
   void random(Wardrobe? wardrobe, {Item? oldItem}) {
@@ -76,6 +77,7 @@ class Combine {
         items?.add(subItems[Random().nextInt(subItems.length)]);
       }
     }
+    items.sort();
   }
 
   Object? toData() => {
@@ -84,4 +86,23 @@ class Combine {
     'items': items?.map((e) => e.id).toList()??[],
     'wear_dates': wearDates?.map((e) => Timestamp.fromDate(e)).toList()??[]
   };
+
+  void removeItem(Item item) {
+    items.removeWhere((element) => element.id == item.id);
+  }
+
+  void replaceWith(Item item) {
+    items.removeWhere((element) => element.type == item.type);
+    items.add(item);
+    items.sort();
+  }
+
+  bool hasItem(Item item) {
+    for (Item i in items) {
+      if (item.id == i.id) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

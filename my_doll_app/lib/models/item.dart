@@ -99,7 +99,14 @@ class Item implements Comparable {
   }
 
   @override
-  int compareTo(other) => createTime?.compareTo(other.createTime)??0;
+  int compareTo(other) {
+    int a = ItemTypeService.enumToZIndex(type);
+    int b = ItemTypeService.enumToZIndex(other.type);
+    if (a == b) {
+      return createTime?.compareTo(other.createTime)??0;
+    }
+    return a - b;
+  }
 }
 
 class ItemImages {

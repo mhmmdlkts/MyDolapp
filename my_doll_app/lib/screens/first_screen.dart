@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_doll_app/screens/combine_screen.dart';
+import 'package:my_doll_app/screens/calendar_screen.dart';
 import 'package:my_doll_app/screens/get_additional_info_screen.dart';
 import 'package:my_doll_app/screens/home_screen.dart';
 import 'package:my_doll_app/screens/profile_screen.dart';
